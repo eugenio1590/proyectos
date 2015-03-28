@@ -1,6 +1,98 @@
-<?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window title="new page title" border="none" closable="true">
-New Content Here!
-</window>
+	<window id="winUsuario" title="Registrar Nuevo Usuario"
+		border="none" width="1000px" height="500px" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.FormularioUsuariosViewModel')"
+		onClose="@command('salir')">
+		<label value="Tipo de Usuario" />
+		<separator orient="vertical" width="10px" />
+		<combobox id="cmbTipoUsuario" readonly="true" model="@load(vm.tiposUsuario)"
+			selectedItem="@bind(vm.tipoSeleccionado)" onSelect="@command('consultarPersonas')">
+			<template name="model">
+				<comboitem label="@bind(each.nombre)" value="@bind(each.valor)" />
+			</template>
+		</combobox>
+		<separator />
+		<columnlayout width="100%" height="90%">
+			<columnchildren width="70%">
+				<div style="border: 5px solid #d9e5ef;" height="100%">
+					<listbox id="gridPersonas" mold="paging" checkmark="false" multiple="false"
+						model="@load(vm.personasSinUsuario)" height="100%">
+						<auxhead sclass="nombre-center">
+							<auxheader colspan="1">
+								<div sclass="z-icon-filter bigger-200" />
+								<!--	<textbox value="@bind(vm.nombreFiltro)"
+									instant="true" placeholder="Buscar por Nombre"
+									onChange="@command('aplicarFiltro')" />
+								-->
+							</auxheader>
+							<auxheader colspan="1">
+							</auxheader>
+							<auxheader colspan="1"></auxheader>
+							<auxheader colspan="1"></auxheader>
+						</auxhead>
+						<listhead menupopup="auto">
+							<listheader id="cedula" label="Cedula" sort="auto(cedula)" />
+							<listheader id="nombre" label="Nombre" sort="auto(nombre)" />
+							<listheader id="apellido" label="Apellido" sort="auto(apellido)" />
+							<listheader width="10%" />
+						</listhead>
+						<template name="model">
+							<listitem>
+								<listcell label="@bind(each.cedula)" />
+								<listcell label="@bind(each.nombre)" />
+								<listcell label="@bind(each.apellido)" />
+								<listcell>
+									<div sclass=" action">
+										<a iconSclass="z-icon-pencil green bigger-200"
+											tooltiptext="Crear Usuario"
+											onClick="@command('verInfoPersona', persona = each)" />
+									</div>
+								</listcell>
+							</listitem>
+						</template>
+					</listbox>
+					<paging id="pagPersonas" onPaging="@command('paginarLista')" autohide="true" />
+				</div>
+			</columnchildren>
+			<columnchildren width="30%">
+				<div style="border: 5px solid #d9e5ef;" height="100%" 
+				form="@id('fx') @load(vm.personaSeleccionada)">
+					<window title="Nuevo Usuario" border="none">
+						<grid>
+							<columns>
+								<column width="120px" />
+								<column />
+							</columns>
+							<rows >
+								<row>
+									<label value="Cedula" />
+									<textbox readonly="true" value="@bind(fx.cedula)" />
+								</row>
+								<row>
+									<label value="Nombre"/>
+									<textbox readonly="true" value="@bind(fx.nombre)"/>
+								</row>
+								<row>
+									<label value="Apellido"/>
+									<textbox readonly="true" value="@bind(fx.apellido)"/>
+								</row>
+								<row>
+									<label value="Username" />
+									<textbox value="@bind(vm.usuario.username)"/>
+								</row>
+								<row>
+									<label value="Password"/>
+									<textbox value="@bind(vm.usuario.pasword)" type="password"/>
+								</row>
+							</rows>
+						</grid>
+						<toolbar>
+							<button label="Guardar" sclass="btn btn-sm btn-info" onClick="@command('guardar')"/>
+        				</toolbar>
+					</window>
+				</div>
+			</columnchildren>
+		</columnlayout>
+	</window>
 </zk>

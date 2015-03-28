@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.prueba.web.service.configuracion.ServicioControlUsuario;
+import com.prueba.web.configuracion.service.ServicioControlUsuario;
 
 /**
  * Handles requests for the application home page.

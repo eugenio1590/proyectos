@@ -1,7 +1,7 @@
 <zk>
 	<style src="/resources/css/menubar.css"/>
 	<menubar sclass="user-menu light-blue" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.PerfilViewModel')">
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.PerfilViewModel')">
 		<menuitem id="menInfoUsuario" tooltiptext="John's Avatar" label="Welcome, Jason" 
 			image="/resources/img/user.png" sclass="menubarCustom"/>
 		<menu label="">

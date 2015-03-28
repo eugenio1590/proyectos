@@ -1,6 +1,6 @@
 <zk>
 	<div id="sidebar" sclass="sidebar" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vms') @init('com.prueba.web.mvvm.controladores.SidebarViewModel')">
+		viewModel="@id('vms') @init('com.prueba.web.mvvm.controladores.seguridad.SidebarViewModel')">
 		
 		<navbar id="navbar" sclass="nav-list" orient="vertical">
 			<!-- 

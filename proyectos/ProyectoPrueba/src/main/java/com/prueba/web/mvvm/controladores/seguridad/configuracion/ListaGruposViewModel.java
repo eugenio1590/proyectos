@@ -25,7 +25,7 @@ import org.zkoss.zul.Paging;
 import com.prueba.web.model.Group;
 import com.prueba.web.mvvm.AbstractViewModel;
 import com.prueba.web.mvvm.BeanInjector;
-import com.prueba.web.service.seguridad.configuracion.ServicioControlGrupo;
+import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
 
 public class ListaGruposViewModel extends AbstractViewModel implements EventListener<SortEvent>{
 	
@@ -43,14 +43,15 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 	//Modelos
 	private List<Group> grupos;
 	private Set<Group> gruposSeleccionados;
+	private Group grupoFiltro;
 	
 	//Atributos
 	private static final int PAGE_SIZE = 3;
-	private String nombreFiltro;
 
 	@AfterCompose
 	public void doAfterCompose(@ContextParam(ContextType.VIEW) Component view){
 		super.doAfterCompose(view);
+		grupoFiltro = new Group();
 		pagGrupos.setPageSize(PAGE_SIZE);
 		agregarGridSort(gridGrupos);
 		cambiarGrupos(0, null, null);
@@ -78,7 +79,7 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
 		
-		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(nombreFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
+		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(grupoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 		Long total = (Long) parametros.get("total");
 		grupos = (List<Group>) parametros.get("grupos");
 		gridGrupos.setMultiple(true);
@@ -165,12 +166,12 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 		this.gruposSeleccionados = gruposSeleccionados;
 	}
 
-	public String getNombreFiltro() {
-		return nombreFiltro;
+	public Group getGrupoFiltro() {
+		return grupoFiltro;
 	}
 
-	public void setNombreFiltro(String nombreFiltro) {
-		this.nombreFiltro = nombreFiltro;
+	public void setGrupoFiltro(Group grupoFiltro) {
+		this.grupoFiltro = grupoFiltro;
 	}
 	
 }

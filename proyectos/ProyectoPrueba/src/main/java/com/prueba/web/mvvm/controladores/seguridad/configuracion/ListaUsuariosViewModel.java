@@ -28,7 +28,7 @@ import org.zkoss.zul.Radiogroup;
 import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.AbstractViewModel;
 import com.prueba.web.mvvm.BeanInjector;
-import com.prueba.web.service.configuracion.ServicioControlUsuario;
+import com.prueba.web.configuracion.service.ServicioControlUsuario;
 
 public class ListaUsuariosViewModel extends AbstractViewModel implements EventListener<SortEvent>{
 	
@@ -49,16 +49,15 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	//Modelos
 	private List<Usuario> usuarios;
 	private Set<Usuario> usuariosSeleccionados;
+	private Usuario usuarioFiltro;
 	
 	//Atributos
 	private static final int PAGE_SIZE = 3;
-	private Integer idUserFiltro;
-	private String usernameFiltro;
-	private Boolean activoFiltro;
 
 	@AfterCompose
 	public void doAfterCompose(@ContextParam(ContextType.VIEW) Component view){
 		super.doAfterCompose(view);
+		usuarioFiltro = new Usuario();
 		pagUsuarios.setPageSize(PAGE_SIZE);
 		agregarGridSort(gridUsuarios);
 		cambiarUsuarios(0, null, null);
@@ -84,8 +83,7 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	public void cambiarUsuarios(@Default("0") @BindingParam("page") int page, 
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
-		Map<String, Object> parametros = servicioControlUsuario.consultarUsuarios(idUserFiltro, usernameFiltro, 
-				this.activoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
+		Map<String, Object> parametros = servicioControlUsuario.consultarUsuarios(usuarioFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 		Long total = (Long) parametros.get("total");
 		usuarios = (List<Usuario>) parametros.get("usuarios");
 		gridUsuarios.setMultiple(true);
@@ -106,14 +104,14 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	@NotifyChange("usuarios")
 	public void aplicarFiltro(){
 		Radio selectedItem = radEstado.getSelectedItem();
-		activoFiltro = (selectedItem!=null) ? Boolean.valueOf((String)selectedItem.getValue()) : null;
+		this.usuarioFiltro.setActivo((selectedItem!=null) ? Boolean.valueOf((String)selectedItem.getValue()) : null);
 		cambiarUsuarios(0, null, null);
 	}
 	
 	@Command
 	@NotifyChange("usuarios")
 	public void limpiarRadios(){
-		activoFiltro = null;
+		this.usuarioFiltro.setActivo(null);
 		radEstado.setSelectedIndex(-1);
 		aplicarFiltro();
 	}
@@ -208,27 +206,7 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 		this.usuariosSeleccionados = usuariosSeleccionados;
 	}
 	
-	public Integer getIdUserFiltro() {
-		return idUserFiltro;
-	}
-
-	public void setIdUserFiltro(Integer idUserFiltro) {
-		this.idUserFiltro = idUserFiltro;
-	}
-
-	public String getUsernameFiltro() {
-		return usernameFiltro;
-	}
-
-	public void setUsernameFiltro(String usernameFiltro) {
-		this.usernameFiltro = usernameFiltro;
-	}
-
-	public Boolean getActivoFiltro() {
-		return activoFiltro;
-	}
-
-	public void setActivoFiltro(Boolean activoFiltro) {
-		this.activoFiltro = activoFiltro;
+	public Usuario getUsuarioFiltro() {
+		return usuarioFiltro;
 	}
 }

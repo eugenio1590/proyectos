@@ -12,9 +12,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.prueba.web.dao.configuracion.UsuarioDAO;
+import com.prueba.web.configuracion.dao.UsuarioDAO;
 import com.prueba.web.model.Usuario;
-import com.prueba.web.service.seguridad.ServicioHistorial;
+import com.prueba.web.seguridad.service.ServicioHistorial;
 
 @Component
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {

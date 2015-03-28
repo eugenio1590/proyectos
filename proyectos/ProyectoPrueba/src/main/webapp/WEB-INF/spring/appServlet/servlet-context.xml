@@ -61,16 +61,18 @@
     <context:annotation-config />
     <!-- DAO -->
     <beans:bean id="articuloDAO" class="com.prueba.web.dao.impl.ArticuloDAOImpl"/>
-    <beans:bean id="usuarioDAO" class="com.prueba.web.dao.impl.configuracion.UsuarioDAOImpl"/>
-    <beans:bean id="menuDAO" class="com.prueba.web.dao.impl.configuracion.MenuDAOImpl"/>
-    <beans:bean id="historyLoginDAO" class="com.prueba.web.dao.impl.seguridad.HistoryLoginDAOImpl"/>
-    <beans:bean id="grupoDAO" class="com.prueba.web.dao.impl.seguridad.configuracion.GrupoDAOImpl"/>
+    <beans:bean id="usuarioDAO" class="com.prueba.web.configuracion.dao.impl.UsuarioDAOImpl"/>
+    <beans:bean id="menuDAO" class="com.prueba.web.configuracion.dao.impl.MenuDAOImpl"/>
+    <beans:bean id="historyLoginDAO" class="com.prueba.web.seguridad.dao.impl.HistoryLoginDAOImpl"/>
+    <beans:bean id="grupoDAO" class="com.prueba.web.seguridad.configuracion.dao.impl.GrupoDAOImpl"/>
+    <beans:bean id="empleadoDAO" class="com.prueba.web.personas.dao.impl.EmpleadoDAOImpl"/>
+    <beans:bean id="clienteDAO" class="com.prueba.web.personas.dao.impl.ClienteDAOImpl"/>
         
     <!-- Servicios -->
     <beans:bean id="serviceControlInventario" class="com.prueba.web.service.impl.ServiceControlInventarioImpl"/>
-    <beans:bean id="servicioControlUsuario" class="com.prueba.web.service.impl.configuracion.ServicioControlUsuarioImpl"/>
-    <beans:bean id="servicioHistorial" class="com.prueba.web.service.impl.seguridad.ServicioHistorialImpl"/>
-    <beans:bean id="servicioControlGrupo" class="com.prueba.web.service.impl.seguridad.configuracion.ServicioControlGrupoImpl"/>
+    <beans:bean id="servicioControlUsuario" class="com.prueba.web.configuracion.service.impl.ServicioControlUsuarioImpl"/>
+    <beans:bean id="servicioHistorial" class="com.prueba.web.seguridad.service.impl.ServicioHistorialImpl"/>
+    <beans:bean id="servicioControlGrupo" class="com.prueba.web.seguridad.configuracion.service.impl.ServicioControlGrupoImpl"/>
     
     <!-- Transaction Manager -->
     <tx:annotation-driven />

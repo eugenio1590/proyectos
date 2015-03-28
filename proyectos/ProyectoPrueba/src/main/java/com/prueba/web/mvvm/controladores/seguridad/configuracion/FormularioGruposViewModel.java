@@ -14,7 +14,7 @@ import org.zkoss.zul.Window;
 import com.prueba.web.model.Group;
 import com.prueba.web.mvvm.AbstractViewModel;
 import com.prueba.web.mvvm.BeanInjector;
-import com.prueba.web.service.seguridad.configuracion.ServicioControlGrupo;
+import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
 
 public class FormularioGruposViewModel extends AbstractViewModel {
 	

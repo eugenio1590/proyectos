@@ -6,7 +6,7 @@
 			<auxhead sclass="nombre-center">
 				<auxheader colspan="1">
 					<div sclass="z-icon-filter bigger-200"/>
-					<textbox value="@bind(vm.nombreFiltro)" instant="true" placeholder="Buscar por Nombre"
+					<textbox value="@bind(vm.grupoFiltro.groupName)" instant="true" placeholder="Buscar por Nombre"
 						onChange="@command('aplicarFiltro')"/>
 				</auxheader>
 				<auxheader width="20%">

@@ -1,6 +1,6 @@
 <zk>
 	<panel title="Editar Perfil" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.EditarPerfilViewModel')"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.configuracion.EditarPerfilViewModel')"
 		form="@id('rs') @load(vm.usuario) @save(vm.usuario, before='enviar')" >
 		<panelchildren>
 			<grid hflex="1">

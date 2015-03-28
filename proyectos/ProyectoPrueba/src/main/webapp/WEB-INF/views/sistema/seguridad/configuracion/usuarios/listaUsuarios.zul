@@ -6,12 +6,12 @@
 			<auxhead sclass="nombre-center">
 				<auxheader>
 					<div sclass="z-icon-filter bigger-200"/>
-					<spinner constraint="no negative, no zero" width="150px" value="@bind(vm.idUserFiltro)" instant="true"
+					<spinner constraint="no negative, no zero" width="150px" value="@bind(vm.usuarioFiltro.id)" instant="true"
 						placeholder="Buscar por Codigo" onChange="@command('aplicarFiltro')"/>
 				</auxheader>
 				<auxheader colspan="1">
 					<div sclass="z-icon-filter bigger-200"/>
-					<textbox value="@bind(vm.usernameFiltro)" instant="true" placeholder="Buscar por Username"
+					<textbox value="@bind(vm.usuarioFiltro.username)" instant="true" placeholder="Buscar por Username"
 						onChange="@command('aplicarFiltro')"/>
 				</auxheader>
 				<auxheader colspan="1">

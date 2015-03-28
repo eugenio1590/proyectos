@@ -23,8 +23,9 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Generated(GenerationTime.INSERT)
-	@Column(columnDefinition="serial", unique=true, nullable=false)
+	//@Generated(GenerationTime.INSERT)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(columnDefinition="serial", unique=true, nullable=false, insertable=false, updatable=false)
 	private Integer id;
 
 	@Column
@@ -150,6 +151,22 @@ public class Usuario implements Serializable {
 		return groupMember;
 	}
 	
+	public Empleado getEmpleado() {
+		return empleado;
+	}
+
+	public void setEmpleado(Empleado empleado) {
+		this.empleado = empleado;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
 	/**METODOS PROPIOS DE LA CLASE*/
 	public String getFoto64(){
 		if(this.foto!=null)
@@ -170,6 +187,13 @@ public class Usuario implements Serializable {
 			return "Empleado";
 		
 		return "";
+	}
+	
+	public void asignarUsuario(Persona persona){
+		if(persona instanceof Empleado)
+			this.setEmpleado((Empleado) persona);
+		else if(persona instanceof Cliente)
+			this.setCliente((Cliente) persona);
 	}
 
 }
