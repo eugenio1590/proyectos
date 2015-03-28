@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit transaction-type="RESOURCE_LOCAL" name="puProyectoPrueba">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.prueba.web.model.Articulo</class>
+		<class>com.prueba.web.model.Menu</class>
+		<class>com.prueba.web.model.PersistentLogin</class>
+		<class>com.prueba.web.model.Usuario</class>
+		<class>com.prueba.web.model.Authority</class>
+		<class>com.prueba.web.model.GroupMember</class>
+		<class>com.prueba.web.model.Group</class>
+		<class>com.prueba.web.model.HistoryLogin</class>
+		<class>com.prueba.web.model.Cliente</class>
+		<class>com.prueba.web.model.Empleado</class>
+		<class>com.prueba.web.model.Persona</class>
+		 <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
+            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+        </properties>
+	</persistence-unit>
+</persistence>

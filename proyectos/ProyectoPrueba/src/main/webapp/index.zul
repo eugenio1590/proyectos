@@ -1,0 +1,120 @@
+<?page title="Auto Generated index.zul"?>
+<?link href="resources/css/grid.css" rel="stylesheet" type="text/css"?>
+<window id="ventana" title="Hello World!!" border="normal" width="800px"
+	apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.InicioViewModel')">
+
+	<label value="You are using: ${desktop.webApp.version}" /><space/>
+	<button id="login" label="Iniciar Session" onClick="@command('iniciarSession')"/>
+	<!-- 
+	<div style="border-style: solid; padding: 5px;">
+		<include src="WEB-INF/views/inicioSession/login.zul"/>
+	</div>
+	-->
+	<borderlayout width="100%" height="350px">
+		<west width="300px" title="Articulos" collapsible="true"
+			onOpen="@command('openRegionWest', west=self, east=borderEast)">
+			<vlayout>
+				<toolbar>
+					<toolbarbutton height="45px"
+						image="resources/img/icons/ButtonArrowRight32.png"
+						tooltiptext="Agregar Articulos a Comprar"
+						onClick="@command('agregarArticulos')" />
+				</toolbar>
+				<listbox id="gridArticulos" model="@load(vm.articulos)"
+					mold="paging" checkmark="true" multiple="true"
+					selectedItems="@bind(vm.articulosSeleccionados)">
+					<!-- mold="paging" -->
+					<auxhead sclass="nombre-center">
+						<auxheader colspan="1">
+							<!-- 
+								<image src="resources/iconos/filtro.png" />
+							-->
+							<textbox value="@bind(vm.codigoFiltro)"
+								instant="true" onChange="@command('aplicarFiltro')"
+								width="100px" />
+						</auxheader>
+						<auxheader colspan="1">
+							<!-- 
+								<image src="resources/iconos/filtro.png" />
+							-->
+							<textbox value="@bind(vm.nombreFiltro)"
+								instant="true" onChange="@command('aplicarFiltro')"
+								width="100px" />
+						</auxheader>
+					</auxhead>
+					<!-- 
+						<frozen columns="1"/>
+					-->
+					<listhead menupopup="auto">
+						<listheader label="Codigo" sort="auto" />
+						<listheader label="Nombre" sort="auto" />
+					</listhead>
+					<template name="model">
+						<listitem>
+							<listcell label="@bind(each.codigo)" />
+							<listcell label="@bind(each.nombre)" />
+						</listitem>
+					</template>
+
+				</listbox>
+				<paging id="pagArticulos"
+					onPaging="@command('paginarLista')" autohide="true" />
+			</vlayout>
+		</west>
+		<!-- 
+			<center>
+			<div class="actionColumn">
+			<image sclass="pointer" tooltiptext="Add Project"
+			src="resources/img/icons/ButtonArrowRight32.png"
+			onClick="@command('agregarArticulos')">
+			</image>
+			<separator height="15px" />
+			<image sclass="pointer" tooltiptext="Remove Project"
+			src="resources/img/icons/ButtonArrowLeft32.png"
+			onClick="@command('removerArticulos')">
+			</image>
+			</div>
+			</center>  width="43.75%"
+		-->
+		<east id="borderEast" title="Articulos a Comprar"
+			width="62.5%">
+			<div>
+				<toolbar>
+					<toolbarbutton height="45px"
+						image="resources/img/icons/ButtonArrowLeft32.png"
+						tooltiptext="Remover Articulos a Comprar"
+						onClick="@command('removerArticulos')" />
+				</toolbar>
+				<listbox id="gridArticulosCompra"
+					model="@load(vm.articulosCompra)" mold="paging" checkmark="true"
+					multiple="true"
+					selectedItems="@bind(vm.articulosCompraSeleccionados)">
+					<!-- 
+						<frozen columns="1"/>
+					-->
+					<listhead menupopup="auto">
+						<listheader label="Codigo" sort="auto" />
+						<listheader label="Nombre" sort="auto" />
+						<listheader label="Costo" sort="auto" />
+					</listhead>
+					<template name="model">
+						<listitem>
+							<listcell label="@bind(each.codigo)" />
+							<listcell label="@bind(each.nombre)" />
+							<listcell>
+								<textbox value="@bind(each.costo)" />
+							</listcell>
+						</listitem>
+					</template>
+				</listbox>
+				<!-- 
+					<paging id="pagArticulosCompra"
+					onPaging="@command('paginarLista')" autohide="true" />
+				-->
+			</div>
+		</east>
+	</borderlayout>
+	<button id="btnActualizar" label="Grabar"
+		onClick="@command('grabar')" />
+</window>

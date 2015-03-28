@@ -1,0 +1,79 @@
+<zk>
+	<panel title="Editar Perfil" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.EditarPerfilViewModel')"
+		form="@id('rs') @load(vm.usuario) @save(vm.usuario, before='enviar')" >
+		<panelchildren>
+			<grid hflex="1">
+				<columns visible="false">
+					<column width="150px" />
+					<column width="180px" />
+					<column width="150px" />
+					<column width="180px" />
+				</columns>
+				<rows>
+					<row spans="4">
+						<div>
+							<image id="imgFoto" width="110px" height="110px" src="@bind(vm.usuario.getFoto64())" />
+							
+							<button id="btnCambFoto" label="..." sclass="btn-success"
+								upload="true" style="margin-bottom:0px" />
+						</div>
+					</row>
+					<row>
+						Usuario:
+						<textbox id="txtUsername" width="150px" disabled="true"
+							value="@bind(rs.username)" />
+
+						Cédula:
+						<textbox id="txtcodCedula" width="150px" disabled="true" />
+					</row>
+
+					<row>
+						Nombre:
+						<textbox id="txtNombre" width="150px" disabled="true" />
+
+						Apellido:
+						<textbox id="txtApellido" width="150px" disabled="true" />
+					</row>
+
+					<row spans="4">
+						<div>
+							Dirección:
+							<textbox id="txtDireccion" width="590px" disabled="true"
+								maxlength="100" rows="2"/>
+						</div>
+					</row>
+
+					<row spans="4">
+						<div>
+							Correo:
+							<textbox id="txtCorreo" width="350px" disabled="true" 
+								maxlength="50"  />
+						</div>
+					</row>
+
+					<row>
+						Nueva Contraseña:
+						<textbox id="txtClaveNueva" width="150px" type="password"
+							maxlength="50" />
+					</row>
+
+					<row>
+						Confirmar Contraseña:
+						<textbox id="txtClaveNuevaConf" width="150px" type="password"
+							maxlength="50" />
+					</row>
+
+					<row spans="4" align="right">
+						<div class="btn-group btn-group-xs">
+							<button id="btnAceptar" label="Enviar" sclass="btn-success"
+								image="/resources/iconos/aceptar.png" onClick="@command('enviar')"/>
+							<button id="btnCancelar" label="Cancelar" sclass="btn-success"
+								image="/resources/iconos/cancelar.png" />
+						</div>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+	</panel>
+</zk>

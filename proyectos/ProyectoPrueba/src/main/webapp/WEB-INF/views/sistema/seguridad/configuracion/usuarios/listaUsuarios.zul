@@ -1,0 +1,69 @@
+<zk>
+	<window border="none" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.ListaUsuariosViewModel')">
+		<listbox id="gridUsuarios" mold="paging" checkmark="true" multiple="true"
+			selectedItems="@bind(vm.usuariosSeleccionados)" model="@load(vm.usuarios)">
+			<auxhead sclass="nombre-center">
+				<auxheader>
+					<div sclass="z-icon-filter bigger-200"/>
+					<spinner constraint="no negative, no zero" width="150px" value="@bind(vm.idUserFiltro)" instant="true"
+						placeholder="Buscar por Codigo" onChange="@command('aplicarFiltro')"/>
+				</auxheader>
+				<auxheader colspan="1">
+					<div sclass="z-icon-filter bigger-200"/>
+					<textbox value="@bind(vm.usernameFiltro)" instant="true" placeholder="Buscar por Username"
+						onChange="@command('aplicarFiltro')"/>
+				</auxheader>
+				<auxheader colspan="1">
+					<div sclass="z-icon-filter bigger-200"/>
+					<label value="Estado: "/>
+					<radiogroup id="radEstado" orient="horizontal" onCheck="@command('aplicarFiltro')">
+						<radio label="Activo" value="true" />
+						<separator orient="vertical" width="10px" bar="false" />
+						<radio label="Inactivo" value="false"/>
+					</radiogroup>
+					<separator orient="vertical" width="10px" bar="false" />
+					<button label="Limpiar" onClick="@command('limpiarRadios')" sclass="btn btn-minier btn-success"/>
+				</auxheader>
+				<auxheader colspan="1"/>
+				<auxheader width="20%">
+					<button label="Nuevo Usuario" onClick="@command('nuevoUsuario')" sclass="btn btn-sm btn-info"/>
+				</auxheader>
+			</auxhead>
+			<listhead menupopup="auto">
+				<listheader id="id" label="Codigo" sort="auto(id)"/>
+				<listheader id="username" label="Username" sort="auto(username)"/>
+				<listheader label="Estado" sort="none"/>
+				<listheader label="Foto" sort="none" align="center"/>
+				<listheader label="Operaciones" width="20%" sort="none"/>
+			</listhead>
+			<template name="model">
+				<listitem>
+					<listcell label="@bind(each.id)" />
+					<listcell label="@bind(each.username)"/>
+					<listcell label="@bind(each.isActivo())"/>
+					<listcell>
+						<image src="@bind(each.getFoto64())" width="50px" height="50px"/>
+					</listcell>
+					<listcell>
+						
+						<div sclass=" action">
+                			<a iconSclass="z-icon-pencil green bigger-200" tooltiptext="Editar"
+                				onClick="@command('editarUsuario', usuario = each)"/>
+                				
+                			<a iconSclass="z-icon-trash-o red bigger-200" tooltiptext="Eliminar"
+                				onClick="@command('eliminarUsuario', usuario = each)" if="${each.activo}"/>
+                				
+                			<a iconSclass="fa fa-unlock-alt fa-2x" tooltiptext="Activar" 
+                				onClick="@command('actualizarEstado', usuario=each, estado=true)" if="${not each.activo}"/>
+                			
+                			<a iconSclass="fa fa-unlock fa-2x" tooltiptext="Desactivar"
+                				onClick="@command('actualizarEstado', usuario=each, estado=false)" if="${each.activo}"/>
+              			</div>
+					</listcell>
+				</listitem>
+			</template>
+		</listbox>
+		<paging id="pagUsuarios" onPaging="@command('paginarLista')" autohide="true" />
+ 	</window>
+</zk>

@@ -1,0 +1,31 @@
+<zk>
+	<style src="/resources/css/menubar.css"/>
+	<menubar sclass="user-menu light-blue" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.PerfilViewModel')">
+		<menuitem id="menInfoUsuario" tooltiptext="John's Avatar" label="Welcome, Jason" 
+			image="/resources/img/user.png" sclass="menubarCustom"/>
+		<menu label="">
+			<menupopup>
+				<menuitem label="Configuracion" iconSclass="z-icon-cog" />
+				<menuitem label="Profile" iconSclass="z-icon-user" onClick="@command('editarPerfil')" />
+				<menuseparator />
+				<menuitem label="Logout" iconSclass="z-icon-off" onClick="@command('logout')" />
+			</menupopup>
+		</menu>
+	</menubar>
+	<!-- 
+		<div class="shortcuts" align="left">
+		<vlayout>
+		<hlayout>
+		<button id="btnEditP" type="button"
+		class="btn-info" iconSclass="z-icon-pencil" />
+		<button id="btnSalir" type="button"
+		class="btn-danger" iconSclass="z-icon-cogs" />
+		</hlayout>
+		
+		<label id="labUsuario"></label>
+		</vlayout>
+		
+		</div>
+	-->
+</zk>

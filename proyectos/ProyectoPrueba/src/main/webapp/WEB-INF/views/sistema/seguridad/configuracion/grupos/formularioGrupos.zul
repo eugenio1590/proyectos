@@ -1,0 +1,22 @@
+<zk>
+	<window id="winGrupo" title="@bind(vm.titulo)" border="none" width="500px" closable="true" 
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.FormularioGruposViewModel')"
+		form="@id('fx') @load(vm.grupo) @save(vm.grupo, before='guardar')">
+		<grid>
+            <columns>
+                <column width="120px" />
+                <column />
+            </columns>
+            <rows>
+                <row>
+                	<label value="Nombre:"/>
+                	<textbox id="txtNombre" value="@bind(fx.groupName)" tabindex="1" constraint="no empty"/>
+                </row>
+            </rows>
+        </grid>
+		<toolbar>
+			<button label="Guardar" sclass="btn btn-sm btn-info" onClick="@command('guardar')"/>
+        </toolbar>
+ 	</window>
+</zk>

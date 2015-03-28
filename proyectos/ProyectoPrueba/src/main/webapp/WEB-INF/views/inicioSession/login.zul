@@ -1,0 +1,12 @@
+<h:form id="formLogin" action="/web/login" method="POST"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<vbox>
+		<label style="color:red;" value="Datos Invalidos!!!" if="${not empty param.auth}" />
+		Usuario:
+		<textbox id="username" name="j_username" />
+		Clave:
+		<textbox id="password" name="j_password" type="password" />
+		<checkbox id="remember_me" name="remember-me" label="Remember Me" />
+		<button label="Iniciar Session" type="submit" />
+	</vbox>
+</h:form>
