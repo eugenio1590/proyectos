@@ -84,12 +84,12 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
 		Map<String, Object> parametros = servicioControlUsuario.consultarUsuarios(usuarioFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
-		Long total = (Long) parametros.get("total");
+		Integer total = (Integer) parametros.get("total");
 		usuarios = (List<Usuario>) parametros.get("usuarios");
 		gridUsuarios.setMultiple(true);
 		gridUsuarios.setCheckmark(true);
 		pagUsuarios.setActivePage(page);
-		pagUsuarios.setTotalSize(total.intValue());
+		pagUsuarios.setTotalSize(total);
 	}
 	
 	/**COMMAND*/
@@ -118,14 +118,19 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	
 	@Command
 	public void nuevoUsuario(){
-		llamarFormulario("Insertar", null);
+		llamarFormulario("formularioUsuarios.zul", null);
 	}
 	
 	@Command
 	public void editarUsuario(@BindingParam("usuario") Usuario usuario){
-		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("usuario", usuario);
-		llamarFormulario("Modificar", parametros );
+		Usuario userSession = consultarUsuarioSession();
+		if(userSession.getId()!=usuario.getId()){
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("usuario", usuario);
+			llamarFormulario("editarUsuario.zul", parametros);
+		}
+		else
+			mostrarMensaje("Error", "No se puede Editar el Usuario de la Session", Messagebox.ERROR, null, null, null);
 	}
 	
 	@Command
@@ -174,10 +179,8 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 		return servicioControlUsuario.consultarUsuario(user.getUsername(), user.getPassword());
 	}
 	
-	private void llamarFormulario(String operacion, Map<String, Object> parametros){
-		parametros=(parametros == null) ? new HashMap<String, Object>() : parametros;
-		parametros.put("operacion", operacion);
-		crearModal("/WEB-INF/views/sistema/seguridad/configuracion/usuarios/formularioUsuarios.zul", parametros);
+	private void llamarFormulario(String ruta, Map<String, Object> parametros){
+		crearModal("/WEB-INF/views/sistema/seguridad/configuracion/usuarios/"+ruta, parametros);
 	}
 
 	/**SETTERS Y GETTERS*/

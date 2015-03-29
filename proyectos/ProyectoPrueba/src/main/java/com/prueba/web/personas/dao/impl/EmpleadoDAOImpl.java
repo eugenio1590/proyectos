@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.personas.dao.EmpleadoDAO;
 import com.prueba.web.model.Empleado;
+import com.prueba.web.model.Persona;
 
 @Repository
 public class EmpleadoDAOImpl extends AbstractJpaDao<Empleado, Integer> implements EmpleadoDAO {
@@ -24,7 +25,7 @@ public class EmpleadoDAOImpl extends AbstractJpaDao<Empleado, Integer> implement
 	}
 
 	@Override
-	public List<Empleado> consultarEmpleadosSinUsuario(int start, int limit) {
+	public List<Empleado> consultarEmpleadosSinUsuario(Persona empleadoF,int start, int limit) {
 		// TODO Auto-generated method stub
 		//1. Creamos el Criterio de busqueda
 		this.crearCriteria();
@@ -37,6 +38,24 @@ public class EmpleadoDAOImpl extends AbstractJpaDao<Empleado, Integer> implement
 		//3. Creamos las Restricciones de la busqueda
 		List<Predicate> restricciones = new ArrayList<Predicate>();
 		restricciones.add(this.criteriaBuilder.isNull(joins.get("usuario")));
+		
+		if(empleadoF.getCedula()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("cedula")), 
+					"%"+empleadoF.getCedula().toLowerCase()+"%"
+			));
+		
+		if(empleadoF.getNombre()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("nombre")), 
+					"%"+empleadoF.getNombre().toLowerCase()+"%"
+			));
+		
+		if(empleadoF.getApellido()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("apellido")), 
+					"%"+empleadoF.getApellido().toLowerCase()+"%"
+			));
 		
 		//4. Creamos los campos de ordenamiento y ejecutamos
 		Map<String, Boolean> orders = new HashMap<String, Boolean>();

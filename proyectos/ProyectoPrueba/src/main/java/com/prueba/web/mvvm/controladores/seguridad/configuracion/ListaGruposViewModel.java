@@ -80,12 +80,12 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 			@BindingParam("sortDirection") Boolean sortDirection){
 		
 		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(grupoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
-		Long total = (Long) parametros.get("total");
+		Integer total =  (Integer) parametros.get("total");
 		grupos = (List<Group>) parametros.get("grupos");
 		gridGrupos.setMultiple(true);
 		gridGrupos.setCheckmark(true);
 		pagGrupos.setActivePage(page);
-		pagGrupos.setTotalSize(total.intValue());
+		pagGrupos.setTotalSize(total);
 	}
 	
 	/**COMMAND*/

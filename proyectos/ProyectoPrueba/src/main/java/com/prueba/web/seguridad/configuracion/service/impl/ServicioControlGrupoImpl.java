@@ -23,7 +23,7 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	public Map<String, Object> consultarGrupos(Group grupoF, String fieldSort, Boolean sortDirection, int pagina, int limit) {
 		// TODO Auto-generated method stub
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", ((Integer) grupoDAO.consultarGrupos(grupoF, fieldSort, sortDirection, 0, -1).size()).longValue());
+		parametros.put("total", grupoDAO.consultarGrupos(grupoF, fieldSort, sortDirection, 0, -1).size());
 		parametros.put("grupos", grupoDAO.consultarGrupos(grupoF, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
 	}

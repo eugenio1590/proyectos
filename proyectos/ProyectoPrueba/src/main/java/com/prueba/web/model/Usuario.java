@@ -189,6 +189,16 @@ public class Usuario implements Serializable {
 		return "";
 	}
 	
+	public Persona obtenerUsuario(){
+		if(this.cliente!=null)
+			return this.getCliente();
+		
+		if(this.empleado!=null)
+			return this.getEmpleado();
+		
+		return null;
+	}
+	
 	public void asignarUsuario(Persona persona){
 		if(persona instanceof Empleado)
 			this.setEmpleado((Empleado) persona);

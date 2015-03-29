@@ -21,14 +21,22 @@
 						<auxhead sclass="nombre-center">
 							<auxheader colspan="1">
 								<div sclass="z-icon-filter bigger-200" />
-								<!--	<textbox value="@bind(vm.nombreFiltro)"
-									instant="true" placeholder="Buscar por Nombre"
+								<textbox value="@bind(vm.personaFiltro.cedula)"
+									instant="true" placeholder="Buscar por Cedula"
 									onChange="@command('aplicarFiltro')" />
-								-->
 							</auxheader>
 							<auxheader colspan="1">
+								<div sclass="z-icon-filter bigger-200" />
+								<textbox value="@bind(vm.personaFiltro.nombre)"
+									instant="true" placeholder="Buscar por Nombre"
+									onChange="@command('aplicarFiltro')" />
 							</auxheader>
-							<auxheader colspan="1"></auxheader>
+							<auxheader colspan="1">
+								<div sclass="z-icon-filter bigger-200" />
+								<textbox value="@bind(vm.personaFiltro.apellido)"
+									instant="true" placeholder="Buscar por Apellido"
+									onChange="@command('aplicarFiltro')" />
+							</auxheader>
 							<auxheader colspan="1"></auxheader>
 						</auxhead>
 						<listhead menupopup="auto">
@@ -57,7 +65,9 @@
 			</columnchildren>
 			<columnchildren width="30%">
 				<div style="border: 5px solid #d9e5ef;" height="100%" 
-				form="@id('fx') @load(vm.personaSeleccionada)">
+					form="@id('fx') @load(vm.personaSeleccionada) 
+					@save(vm.personaSeleccionada, before='guardar')">
+					
 					<window title="Nuevo Usuario" border="none">
 						<grid>
 							<columns>
@@ -79,16 +89,17 @@
 								</row>
 								<row>
 									<label value="Username" />
-									<textbox value="@bind(vm.usuario.username)"/>
+									<textbox value="@save(vm.usuario.username, before='guardar') 
+										@validator(vm.validadorUsername, txtUsername = self)"/>
 								</row>
 								<row>
 									<label value="Password"/>
-									<textbox value="@bind(vm.usuario.pasword)" type="password"/>
+									<textbox id="txtPassword" value="@bind(vm.usuario.pasword)" type="password"/>
 								</row>
 							</rows>
 						</grid>
 						<toolbar>
-							<button label="Guardar" sclass="btn btn-sm btn-info" onClick="@command('guardar')"/>
+							<button label="Guardar" sclass="btn btn-sm btn-info" onClick="@command('guardar', txtPassword=txtPassword)"/>
         				</toolbar>
 					</window>
 				</div>

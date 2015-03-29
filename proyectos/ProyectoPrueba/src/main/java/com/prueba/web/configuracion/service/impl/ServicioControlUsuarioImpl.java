@@ -25,6 +25,7 @@ import com.prueba.web.model.Authority;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Menu;
+import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.configuracion.service.ServicioControlUsuario;
@@ -163,27 +164,33 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 			int pagina, int limit) {
 		// TODO Auto-generated method stub
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", ((Integer) usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, 0, -1).size()).longValue());
+		parametros.put("total", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, 0, -1).size());
 		parametros.put("usuarios", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
+	}
+	
+	@Override
+	public boolean verificarUsername(String username){
+		Usuario usuario = consultarUsuario(username, null);
+		return (usuario!=null);
 	}
 	
 	//Usuarios Especificos:
 	//1.1 Empleados
 	@Override
-	public Map<String, Object> consultarEmpleadosSinUsuarios(int pagina, int limit){
+	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", ((Integer) empleadoDAO.consultarEmpleadosSinUsuario(0, -1).size()).longValue());
-		parametros.put("empleados", empleadoDAO.consultarEmpleadosSinUsuario(pagina*limit, limit));
+		parametros.put("total", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, 0, -1).size());
+		parametros.put("empleados", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, pagina*limit, limit));
 		return parametros;
 	}
 	
 	//2.2 Clientes
 	@Override
-	public Map<String, Object> consultarClientesSinUsuarios(int pagina, int limit){
+	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", ((Integer) clienteDAO.consultarClientesSinUsuario(0, -1).size()).longValue());
-		parametros.put("clientes", clienteDAO.consultarClientesSinUsuario(pagina*limit, limit));
+		parametros.put("total", clienteDAO.consultarClientesSinUsuario(clienteF, 0, -1).size());
+		parametros.put("clientes", clienteDAO.consultarClientesSinUsuario(clienteF, pagina*limit, limit));
 		return parametros;
 	}
 	

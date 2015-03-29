@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.User;
 
 import com.prueba.web.model.Menu;
+import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 
 public interface ServicioControlUsuario {
@@ -21,11 +22,12 @@ public interface ServicioControlUsuario {
 	public UsernamePasswordAuthenticationToken consultarAutenticacion(User user);
 	public Map<String, Object> consultarUsuarios(Usuario usuarioF, String fieldSort, Boolean sortDirection, 
 			int pagina, int limit);
+	public boolean verificarUsername(String username);
 	//Usuarios Especificos:
 	//1. Empleado
-	public Map<String, Object> consultarEmpleadosSinUsuarios(int pagina, int limit);
+	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, int pagina, int limit);
 	//2. Cliente
-	public Map<String, Object> consultarClientesSinUsuarios(int pagina, int limit);
+	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, int pagina, int limit);
 	//Menu
 	public List<Menu> consultarMenus();
 }

@@ -234,14 +234,15 @@ public abstract class AbstractViewModel {
 	 * @param tipo: tipo de mensaje a mostrar -> "info", "warning", "error". Default "info"
 	 * @param duration: duracion de la notificacion
 	 * @param closable: si puede o no cerrarse la notificacion
+	 * @param parent: objeto de referencia donde se colocara la notificacion
 	 * Retorno: Ninguno
 	 * */
-	protected void mostrarNotification(String Mensaje, String tipo, Integer duration, Boolean closable){
+	protected void mostrarNotification(String Mensaje, String tipo, Integer duration, Boolean closable, Component parent){
 		
 		tipo= (tipo==null) ? "info" : tipo;
 		duration= (duration==null) ? 2000 : duration;
 		closable=(closable==null) ? false : closable;
-		Clients.showNotification(Mensaje, tipo, null, null, duration, closable);
+		Clients.showNotification(Mensaje, tipo, parent, null, duration, closable);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.personas.dao.ClienteDAO;
 import com.prueba.web.model.Cliente;
+import com.prueba.web.model.Persona;
 
 public class ClienteDAOImpl extends AbstractJpaDao<Cliente, Integer> implements ClienteDAO {
 	
@@ -21,7 +22,7 @@ public class ClienteDAOImpl extends AbstractJpaDao<Cliente, Integer> implements 
 	}
 
 	@Override
-	public List<Cliente> consultarClientesSinUsuario(int start, int limit) {
+	public List<Cliente> consultarClientesSinUsuario(Persona clienteF, int start, int limit) {
 		// TODO Auto-generated method stub
 		//1. Creamos el Criterio de busqueda
 		this.crearCriteria();
@@ -34,6 +35,24 @@ public class ClienteDAOImpl extends AbstractJpaDao<Cliente, Integer> implements 
 		//3. Creamos las Restricciones de la busqueda
 		List<Predicate> restricciones = new ArrayList<Predicate>();
 		restricciones.add(this.criteriaBuilder.isNull(joins.get("usuario")));
+		
+		if(clienteF.getCedula()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("cedula")), 
+					"%"+clienteF.getCedula().toLowerCase()+"%"
+			));
+		
+		if(clienteF.getNombre()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("nombre")), 
+					"%"+clienteF.getNombre().toLowerCase()+"%"
+			));
+		
+		if(clienteF.getApellido()!=null)
+			restricciones.add(this.criteriaBuilder.like(
+					this.criteriaBuilder.lower(this.entity.<String>get("apellido")), 
+					"%"+clienteF.getApellido().toLowerCase()+"%"
+			));
 
 		//4. Creamos los campos de ordenamiento y ejecutamos
 		Map<String, Boolean> orders = new HashMap<String, Boolean>();
