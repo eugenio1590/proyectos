@@ -11,13 +11,12 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.stereotype.Repository;
 
-import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.personas.dao.EmpleadoDAO;
 import com.prueba.web.model.Empleado;
 import com.prueba.web.model.Persona;
 
 @Repository
-public class EmpleadoDAOImpl extends AbstractJpaDao<Empleado, Integer> implements EmpleadoDAO {
+public class EmpleadoDAOImpl extends PersonaDAOImpl<Empleado> implements EmpleadoDAO {
 
 	public EmpleadoDAOImpl() {
 		super(Empleado.class);
@@ -39,30 +38,20 @@ public class EmpleadoDAOImpl extends AbstractJpaDao<Empleado, Integer> implement
 		List<Predicate> restricciones = new ArrayList<Predicate>();
 		restricciones.add(this.criteriaBuilder.isNull(joins.get("usuario")));
 		
-		if(empleadoF.getCedula()!=null)
-			restricciones.add(this.criteriaBuilder.like(
-					this.criteriaBuilder.lower(this.entity.<String>get("cedula")), 
-					"%"+empleadoF.getCedula().toLowerCase()+"%"
-			));
-		
-		if(empleadoF.getNombre()!=null)
-			restricciones.add(this.criteriaBuilder.like(
-					this.criteriaBuilder.lower(this.entity.<String>get("nombre")), 
-					"%"+empleadoF.getNombre().toLowerCase()+"%"
-			));
-		
-		if(empleadoF.getApellido()!=null)
-			restricciones.add(this.criteriaBuilder.like(
-					this.criteriaBuilder.lower(this.entity.<String>get("apellido")), 
-					"%"+empleadoF.getApellido().toLowerCase()+"%"
-			));
+		agregarFiltros(empleadoF, restricciones);
 		
 		//4. Creamos los campos de ordenamiento y ejecutamos
 		Map<String, Boolean> orders = new HashMap<String, Boolean>();
 		orders.put("idEmpleado", true);
 		return this.ejecutarCriteria(concatenaArrayPredicate(restricciones), orders, start, limit);
 	}
-
 	
+	/**METODOS PROPIOS DE LA CLASE*/
+	@Override
+	protected void agregarFiltros(Persona empleadoF, List<Predicate> restricciones){
+		if(empleadoF!=null){
+			super.agregarFiltros(empleadoF, restricciones);
+		}
+	}
 
 }

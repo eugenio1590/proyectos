@@ -1,6 +1,7 @@
 package com.prueba.web.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 
@@ -11,6 +12,11 @@ import javax.persistence.*;
 @MappedSuperclass
 public abstract class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id", columnDefinition = "serial")
+	private Integer id;
 	
 	@Column(unique=true, nullable=false)
 	private String cedula;
@@ -34,6 +40,14 @@ public abstract class Persona implements Serializable {
 	private String telefono;
 
 	public Persona() {
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getCedula() {

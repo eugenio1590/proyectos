@@ -260,11 +260,42 @@ public class AbstractJpaDao<T, ID extends Serializable> implements IGenericDao<T
 		return lista;
 	}
 	
-	protected List<T> ejecutarCriteria(Predicate[] conditions, Map<String, Boolean> orders, 
+	protected List<T> ejecutarCriteria(Predicate[] conditions, List<Order> orders, 
 										int numberElements){
 		return this.ejecutarCriteria(conditions, orders, 0, numberElements);
 	}
 	
+	
+	protected List<T> ejecutarCriteria(Predicate[] conditions, List<Order> orders, 
+			int first, int numberElements){
+		List<T> lista = null;
+		HibernateEntityManager entityManager = this.getClassEntityManager();
+		if(query==null)
+			this.crearCriteria();
+
+		if(selected!=null)
+			this.query.multiselect(selected).distinct(distinct);
+		else
+			this.query.select(entity);
+
+		query=(conditions!=null) ? query.where(conditions) : query;
+		if(orders != null)
+			query=query.orderBy(orders);
+		TypedQuery<T> typedQuery = entityManager.createQuery(query);
+		if (numberElements > -1) {
+			typedQuery.setFirstResult(first);
+			typedQuery.setMaxResults(numberElements);
+		}
+		lista = typedQuery.getResultList();
+		return lista;
+	}
+
+	protected List<T> ejecutarCriteria(Predicate[] conditions, Map<String, Boolean> orders, 
+			int numberElements){
+		return this.ejecutarCriteria(conditions, orders, 0, numberElements);
+	}
+
+
 	protected List<T> ejecutarCriteriaParameters(Predicate[] conditions, Map<String, Object> parameters,
 			Map<String, Boolean> orders, int first, int numberElements){
 		List<T> lista = null;

@@ -24,7 +24,6 @@
 				<listbox id="gridArticulos" model="@load(vm.articulos)"
 					mold="paging" checkmark="true" multiple="true"
 					selectedItems="@bind(vm.articulosSeleccionados)">
-					<!-- mold="paging" -->
 					<auxhead sclass="nombre-center">
 						<auxheader colspan="1">
 							<!-- 

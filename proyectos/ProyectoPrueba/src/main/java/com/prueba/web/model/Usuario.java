@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-
 import com.prueba.web.mvvm.AbstractViewModel;
 
 import java.util.List;
@@ -54,6 +51,9 @@ public class Usuario implements Serializable {
 	private List<HistoryLogin> historyLogins;
 	
 	/**USUARIOS ESPECIFICOS*/
+	@Transient
+	public static final String[] USUARIOS = new String[]{"empleado", "cliente"};
+	
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_empleado", referencedColumnName="id_empleado", columnDefinition="integer",
 			nullable=true)
