@@ -6,7 +6,6 @@
 		<class>com.prueba.web.model.Menu</class>
 		<class>com.prueba.web.model.PersistentLogin</class>
 		<class>com.prueba.web.model.Usuario</class>
-		<class>com.prueba.web.model.Authority</class>
 		<class>com.prueba.web.model.GroupMember</class>
 		<class>com.prueba.web.model.Group</class>
 		<class>com.prueba.web.model.HistoryLogin</class>

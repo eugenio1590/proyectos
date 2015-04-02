@@ -9,13 +9,16 @@ import javax.persistence.*;
  * The persistent class for the persona database table.
  * 
  */
-@MappedSuperclass
+@Entity
+@Table(name="persona")
+@Inheritance(strategy=InheritanceType.JOINED)
+@DiscriminatorColumn(name="PERSON_TYPE")
 public abstract class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id", columnDefinition = "serial")
+	@Column(name="id", columnDefinition = "serial", unique=true, nullable=false)
 	private Integer id;
 	
 	@Column(unique=true, nullable=false)
@@ -38,8 +41,33 @@ public abstract class Persona implements Serializable {
 	
 	@Column(length=20)
 	private String telefono;
+	
+	//bi-directional many-to-one association to Usuario (Relacion Poliformica)
+	@OneToOne(mappedBy="persona")
+	private Usuario usuario;
 
 	public Persona() {
+	}
+	
+	public Persona(Persona persona){
+		this(persona.getId(), persona.getCedula(), persona.getApellido(), persona.getCorreo(),
+				persona.getDireccion(), persona.getNombre(), persona.getSexo(), persona.getTelefono(),
+				persona.getUsuario());
+	}
+	
+	public Persona(Integer id, String cedula, String apellido, String correo,
+			String direccion, String nombre, Boolean sexo, String telefono,
+			com.prueba.web.model.Usuario usuario) {
+		super();
+		this.id = id;
+		this.cedula = cedula;
+		this.apellido = apellido;
+		this.correo = correo;
+		this.direccion = direccion;
+		this.nombre = nombre;
+		this.sexo = sexo;
+		this.telefono = telefono;
+		this.usuario = usuario;
 	}
 
 	public Integer getId() {
@@ -104,6 +132,14 @@ public abstract class Persona implements Serializable {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

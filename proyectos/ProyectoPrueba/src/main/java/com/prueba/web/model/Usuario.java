@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Any;
+import org.hibernate.annotations.AnyMetaDef;
+import org.hibernate.annotations.MetaValue;
+
 import com.prueba.web.mvvm.AbstractViewModel;
 
 import java.util.List;
@@ -50,19 +54,19 @@ public class Usuario implements Serializable {
 	@OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
 	private List<HistoryLogin> historyLogins;
 	
-	/**USUARIOS ESPECIFICOS*/
-	@Transient
-	public static final String[] USUARIOS = new String[]{"empleado", "cliente"};
-	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_empleado", referencedColumnName="id_empleado", columnDefinition="integer",
-			nullable=true)
-	private Empleado empleado;
-	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_cliente", referencedColumnName="id_cliente", columnDefinition="integer", 
-		nullable=true)
-	private Cliente cliente;
+	//bi-directional many-to-one association to Persona (Relacion Poliformica)
+	@Any(metaColumn=@Column(name="persona_type"), fetch=FetchType.LAZY)
+	@AnyMetaDef(idType="integer", metaType="string",
+			metaValues={
+					/**USUARIOS ESPECIFICOS*/
+					/*value puede ser omitido*/
+					@MetaValue(targetEntity=Empleado.class, value="E"),
+					@MetaValue(targetEntity=Cliente.class, value="C")
+			}
+	)
+	@OneToOne
+	@JoinColumn(name="persona_id",columnDefinition="integer")
+	private Persona persona;
 
 	public Usuario() {
 	}
@@ -151,6 +155,15 @@ public class Usuario implements Serializable {
 		return groupMember;
 	}
 	
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
+	
+	/*
 	public Empleado getEmpleado() {
 		return empleado;
 	}
@@ -165,7 +178,7 @@ public class Usuario implements Serializable {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}
+	}*/
 
 	/**METODOS PROPIOS DE LA CLASE*/
 	public String getFoto64(){
@@ -179,6 +192,7 @@ public class Usuario implements Serializable {
 		return (this.activo) ? "Activo" : "Inactivo";
 	}
 	
+	/*
 	public String determinarTipo(){
 		if(this.cliente!=null)
 			return "Cliente";
@@ -204,6 +218,6 @@ public class Usuario implements Serializable {
 			this.setEmpleado((Empleado) persona);
 		else if(persona instanceof Cliente)
 			this.setCliente((Cliente) persona);
-	}
+	}*/
 
 }

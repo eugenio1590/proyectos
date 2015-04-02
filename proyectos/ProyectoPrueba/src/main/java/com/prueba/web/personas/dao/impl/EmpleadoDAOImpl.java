@@ -24,31 +24,22 @@ public class EmpleadoDAOImpl extends PersonaDAOImpl<Empleado> implements Emplead
 	}
 
 	@Override
-	public List<Empleado> consultarEmpleadosSinUsuario(Persona empleadoF,int start, int limit) {
+	public List<Empleado> consultarEmpleadosSinUsuario(Persona empleadoF, String fieldSort, Boolean sortDirection,
+			int start, int limit) {
 		// TODO Auto-generated method stub
-		//1. Creamos el Criterio de busqueda
-		this.crearCriteria();
-
-		//2. Generamos los Joins
-		Map<String, JoinType> entidades=new HashMap<String, JoinType>();
-		entidades.put("usuario", JoinType.LEFT);
-		Map<String, Join> joins = this.crearJoins(entidades);
+		return super.consultarPersonaSinUsuarios(new Empleado(empleadoF), fieldSort, sortDirection, start, limit);
+	}
+	
+	/**METODOS OVERRIDE*/
+	@Override
+	protected void agregarRestriccionesPersona(Empleado persona, List<Predicate> restricciones) {
+		// TODO Auto-generated method stub
 		
-		//3. Creamos las Restricciones de la busqueda
-		List<Predicate> restricciones = new ArrayList<Predicate>();
-		restricciones.add(this.criteriaBuilder.isNull(joins.get("usuario")));
-		
-		agregarFiltros(empleadoF, restricciones);
-		
-		//4. Creamos los campos de ordenamiento y ejecutamos
-		Map<String, Boolean> orders = new HashMap<String, Boolean>();
-		orders.put("idEmpleado", true);
-		return this.ejecutarCriteria(concatenaArrayPredicate(restricciones), orders, start, limit);
 	}
 	
 	/**METODOS PROPIOS DE LA CLASE*/
 	@Override
-	protected void agregarFiltros(Persona empleadoF, List<Predicate> restricciones){
+	protected void agregarFiltros(Empleado empleadoF, List<Predicate> restricciones){
 		if(empleadoF!=null){
 			super.agregarFiltros(empleadoF, restricciones);
 		}

@@ -11,13 +11,14 @@ import javax.persistence.*;
 @Entity
 @Table(name="empleado")
 @NamedQuery(name="Empleado.findAll", query="SELECT e FROM Empleado e")
-@AttributeOverride(name="id", column=@Column(name="id_empleado"))
+@PrimaryKeyJoinColumn(name="id_empleado", columnDefinition="integer")
 public class Empleado extends Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@OneToOne(mappedBy="empleado")
-	private Usuario usuario;
-	
 	public Empleado() {
+	}
+	
+	public Empleado(Persona persona) {
+		super(persona);
 	}
 }

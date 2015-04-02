@@ -23,11 +23,17 @@ public interface ServicioControlUsuario {
 	public Map<String, Object> consultarUsuarios(Usuario usuarioF, String fieldSort, Boolean sortDirection, 
 			int pagina, int limit);
 	public boolean verificarUsername(String username);
+	public Map<String, Object> consultarUsuariosAsignadosGrupo(Persona usuarioF, int idGrupo,
+			String fieldSort, Boolean sortDirection, int pagina, int limit);
+	public Map<String, Object> consultarUsuariosNoAsignadosGrupo(Persona usuarioF, int idGrupo,
+			String fieldSort, Boolean sortDirection, int pagina, int limit);
 	//Usuarios Especificos:
 	//1. Empleado
-	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, int pagina, int limit);
+	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, String fieldSort, Boolean sortDirection, 
+			int pagina, int limit);
 	//2. Cliente
-	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, int pagina, int limit);
+	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, String fieldSort, Boolean sortDirection, 
+			int pagina, int limit);
 	//Menu
 	public List<Menu> consultarMenus();
 }

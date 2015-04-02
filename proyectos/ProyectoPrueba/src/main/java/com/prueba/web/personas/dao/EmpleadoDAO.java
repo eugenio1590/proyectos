@@ -6,5 +6,6 @@ import com.prueba.web.model.Empleado;
 import com.prueba.web.model.Persona;
 
 public interface EmpleadoDAO extends PersonaDAO<Empleado> {
-	public List<Empleado> consultarEmpleadosSinUsuario(Persona empleadoF, int start, int limit);
+	public List<Empleado> consultarEmpleadosSinUsuario(Persona empleadoF, String fieldSort, Boolean sortDirection,
+			int start, int limit);
 }

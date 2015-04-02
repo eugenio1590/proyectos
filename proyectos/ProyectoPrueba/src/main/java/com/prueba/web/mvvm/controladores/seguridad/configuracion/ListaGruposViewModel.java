@@ -14,6 +14,7 @@ import org.zkoss.bind.annotation.Default;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.SortEvent;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -47,25 +48,32 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 	
 	//Atributos
 	private static final int PAGE_SIZE = 3;
+	private Boolean checkmark;
+	private Boolean multiple;
+	private Boolean editar;
+	private Boolean eliminar;
+	private Boolean acceso;
 
 	@AfterCompose
 	public void doAfterCompose(@ContextParam(ContextType.VIEW) Component view){
 		super.doAfterCompose(view);
+		configurarParametros();
+		
 		grupoFiltro = new Group();
 		pagGrupos.setPageSize(PAGE_SIZE);
 		agregarGridSort(gridGrupos);
 		cambiarGrupos(0, null, null);
 	}
-	
+
 	/**Interface: EventListener<SortEvent>*/
 	@Override
 	@NotifyChange("grupos")
 	public void onEvent(SortEvent event) throws Exception {
-		// TODO Auto-generated method stub		
-		if(event.getTarget() instanceof Listheader){
-			//System.out.println(event.getTarget().getParent().getParent().equals(gridGrupos));
+		// TODO Auto-generated method stub	
+		Component component = event.getTarget();
+		if(component instanceof Listheader){
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fieldSort",  event.getTarget().getId().toString());
+			parametros.put("fieldSort", ((Listheader) component).getValue().toString());
 			parametros.put("sortDirection", event.isAscending());
 			ejecutarGlobalCommand("cambiarGrupos", parametros );
 		}
@@ -82,8 +90,8 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(grupoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 		Integer total =  (Integer) parametros.get("total");
 		grupos = (List<Group>) parametros.get("grupos");
-		gridGrupos.setMultiple(true);
-		gridGrupos.setCheckmark(true);
+		gridGrupos.setMultiple(multiple);
+		gridGrupos.setCheckmark(checkmark);
 		pagGrupos.setActivePage(page);
 		pagGrupos.setTotalSize(total);
 	}
@@ -134,7 +142,29 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 		}
 	}
 	
+	@Command
+	public void configurarAcceso(@BindingParam("grupo") Group grupo){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("grupo", grupo);
+		crearModal("/WEB-INF/views/sistema/seguridad/configuracion/accesos/formularioAccesos.zul", parametros);
+	}
+	
 	/**METODOS PROPIOS DE LA CLASE*/
+	private void configurarParametros() {
+		// TODO Auto-generated method stub
+		String parametro;
+		parametro=leerAtributoURL("checkmark");
+		checkmark = (parametro!=null) ? Boolean.valueOf(parametro) : true;
+		parametro=leerAtributoURL("multiple");
+		multiple = (parametro!=null) ? Boolean.valueOf(parametro) : true;
+		parametro=leerAtributoURL("editar");
+		editar = (parametro!=null) ? Boolean.valueOf(parametro) : true;
+		parametro=leerAtributoURL("eliminar");
+		eliminar = (parametro!=null) ? Boolean.valueOf(parametro) : true;
+		parametro=leerAtributoURL("acceso");
+		acceso = (parametro!=null) ? Boolean.valueOf(parametro) : false;
+	}
+	
 	private void llamarFormulario(String operacion, Map<String, Object> parametros){
 		parametros=(parametros == null) ? new HashMap<String, Object>() : parametros;
 		parametros.put("operacion", operacion);
@@ -172,6 +202,46 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 
 	public void setGrupoFiltro(Group grupoFiltro) {
 		this.grupoFiltro = grupoFiltro;
+	}
+
+	public Boolean getCheckmark() {
+		return checkmark;
+	}
+
+	public void setCheckmark(Boolean checkmark) {
+		this.checkmark = checkmark;
+	}
+
+	public Boolean getMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(Boolean multiple) {
+		this.multiple = multiple;
+	}
+
+	public Boolean getEditar() {
+		return editar;
+	}
+
+	public void setEditar(Boolean editar) {
+		this.editar = editar;
+	}
+
+	public Boolean getEliminar() {
+		return eliminar;
+	}
+
+	public void setEliminar(Boolean eliminar) {
+		this.eliminar = eliminar;
+	}
+
+	public Boolean getAcceso() {
+		return acceso;
+	}
+
+	public void setAcceso(Boolean acceso) {
+		this.acceso = acceso;
 	}
 	
 }

@@ -67,6 +67,7 @@
     <beans:bean id="grupoDAO" class="com.prueba.web.seguridad.configuracion.dao.impl.GrupoDAOImpl"/>
     <beans:bean id="empleadoDAO" class="com.prueba.web.personas.dao.impl.EmpleadoDAOImpl"/>
     <beans:bean id="clienteDAO" class="com.prueba.web.personas.dao.impl.ClienteDAOImpl"/>
+    <beans:bean id="groupMemberDAO" class="com.prueba.web.seguridad.configuracion.dao.impl.GroupMemberDAOImpl"/>
         
     <!-- Servicios -->
     <beans:bean id="serviceControlInventario" class="com.prueba.web.service.impl.ServiceControlInventarioImpl"/>

@@ -67,10 +67,11 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	@Override
 	@NotifyChange("usuarios")
 	public void onEvent(SortEvent event) throws Exception {
-		// TODO Auto-generated method stub		
-		if(event.getTarget() instanceof Listheader){
+		// TODO Auto-generated method stub	
+		Component component = event.getTarget();
+		if(component instanceof Listheader){
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fieldSort",  event.getTarget().getId().toString());
+			parametros.put("fieldSort",  ((Listheader) component).getValue().toString());
 			parametros.put("sortDirection", event.isAscending());
 			ejecutarGlobalCommand("cambiarUsuarios", parametros );
 		}

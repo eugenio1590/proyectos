@@ -21,7 +21,6 @@ import com.prueba.web.configuracion.dao.MenuDAO;
 import com.prueba.web.configuracion.dao.UsuarioDAO;
 import com.prueba.web.personas.dao.ClienteDAO;
 import com.prueba.web.personas.dao.EmpleadoDAO;
-import com.prueba.web.model.Authority;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Menu;
@@ -75,9 +74,8 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 				if(usuario.getGroupMembers()!=null)
 					for(GroupMember grupoMiembro : usuario.getGroupMembers()){
 						Group grupo = grupoMiembro.getGroup();
-						if(grupo.getAuthorities()!=null)
-							for(Authority authority : grupo.getAuthorities())
-								authorities.add(new GrantedAuthorityImpl(authority.getAuthority()));
+						if(grupo.getAuthority()!=null)
+							authorities.add(new GrantedAuthorityImpl(grupo.getAuthority()));
 
 					}
 				User securityUser = new User(username, usuario.getPasword(), true, true, true, true,  authorities);
@@ -162,7 +160,6 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarUsuarios(Usuario usuarioF, String fieldSort, Boolean sortDirection, 
 			int pagina, int limit) {
-		// TODO Auto-generated method stub
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		parametros.put("total", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, 0, -1).size());
 		parametros.put("usuarios", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, pagina*limit, limit));
@@ -175,22 +172,41 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 		return (usuario!=null);
 	}
 	
+	@Override
+	public Map<String, Object> consultarUsuariosAsignadosGrupo(Persona usuarioF, int idGrupo,
+			String fieldSort, Boolean sortDirection, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", usuarioDAO.consultarUsuariosAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
+		parametros.put("usuarios", usuarioDAO.consultarUsuariosAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		return parametros;
+	}
+	
+	@Override
+	public Map<String, Object> consultarUsuariosNoAsignadosGrupo(Persona usuarioF, int idGrupo,
+			String fieldSort, Boolean sortDirection, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
+		parametros.put("usuarios", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		return parametros;
+	}
+	
 	//Usuarios Especificos:
 	//1.1 Empleados
 	@Override
-	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, int pagina, int limit){
+	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, String fieldSort, Boolean sortDirection, int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, 0, -1).size());
-		parametros.put("empleados", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, pagina*limit, limit));
+		parametros.put("total", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, fieldSort, sortDirection, 0, -1).size());
+		parametros.put("empleados", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
 	}
 	
 	//2.2 Clientes
 	@Override
-	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, int pagina, int limit){
+	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, String fieldSort, Boolean sortDirection,
+			int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", clienteDAO.consultarClientesSinUsuario(clienteF, 0, -1).size());
-		parametros.put("clientes", clienteDAO.consultarClientesSinUsuario(clienteF, pagina*limit, limit));
+		parametros.put("total", clienteDAO.consultarClientesSinUsuario(clienteF, fieldSort, sortDirection, 0, -1).size());
+		parametros.put("clientes", clienteDAO.consultarClientesSinUsuario(clienteF, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
 	}
 	

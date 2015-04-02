@@ -11,15 +11,16 @@ import javax.persistence.*;
 @Entity
 @Table(name="cliente")
 @NamedQuery(name="Cliente.findAll", query="SELECT c FROM Cliente c")
-@AttributeOverride(name="id", column=@Column(name="id_cliente"))
+@PrimaryKeyJoinColumn(name="id_cliente", columnDefinition="integer")
 public class Cliente extends Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	@OneToOne(mappedBy="cliente")
-	private Usuario usuario;
 
 	public Cliente() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public Cliente(Persona persona) {
+		super(persona);
 	}
 
 }

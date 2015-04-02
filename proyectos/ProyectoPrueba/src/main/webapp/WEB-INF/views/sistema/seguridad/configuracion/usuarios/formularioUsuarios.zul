@@ -40,9 +40,9 @@
 							<auxheader colspan="1"></auxheader>
 						</auxhead>
 						<listhead menupopup="auto">
-							<listheader id="cedula" label="Cedula" sort="auto(cedula)" />
-							<listheader id="nombre" label="Nombre" sort="auto(nombre)" />
-							<listheader id="apellido" label="Apellido" sort="auto(apellido)" />
+							<listheader value="cedula" label="Cedula" sort="auto(cedula)" />
+							<listheader value="nombre" label="Nombre" sort="auto(nombre)" />
+							<listheader value="apellido" label="Apellido" sort="auto(apellido)" />
 							<listheader width="10%" />
 						</listhead>
 						<template name="model">

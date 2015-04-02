@@ -6,8 +6,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.prueba.web.seguridad.configuracion.dao.GroupMemberDAO;
 import com.prueba.web.seguridad.configuracion.dao.GrupoDAO;
 import com.prueba.web.model.Group;
+import com.prueba.web.model.Persona;
+import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.service.impl.AbstractServiceImpl;
 import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
@@ -19,6 +22,11 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	@BeanInjector("grupoDAO")
 	private GrupoDAO grupoDAO;
 	
+	@Autowired
+	@BeanInjector("groupMemberDAO")
+	private GroupMemberDAO groupMemberDAO;
+	
+	//Grupos
 	@Override
 	public Map<String, Object> consultarGrupos(Group grupoF, String fieldSort, Boolean sortDirection, int pagina, int limit) {
 		// TODO Auto-generated method stub
@@ -37,6 +45,7 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	@Override
 	public Group registrarOActualizarGrupo(Group grupo) {
 		// TODO Auto-generated method stub
+		grupo.setAuthority("ROLE_"+grupo.getGroupName().replaceAll(" ", "_").toUpperCase());
 		if(grupo.getId()!=null)
 			return grupoDAO.update(grupo);
 		else
@@ -54,6 +63,15 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 		return true;
 	}
 
+	//Miembros de Grupo
+	@Override
+	public Map<String, Object> consultarMiembrosGrupo(Persona personaF, int idGrupo,
+			String fieldSort, Boolean sortDirection, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", groupMemberDAO.consultarUsuariosAsignadosGrupo(personaF, idGrupo, fieldSort, sortDirection, 0, -1).size());
+		parametros.put("miembros", groupMemberDAO.consultarUsuariosAsignadosGrupo(personaF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		return parametros;
+	}
 	/**SETTERS Y GETTERS*/
 	public GrupoDAO getGrupoDAO() {
 		return grupoDAO;

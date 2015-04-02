@@ -100,9 +100,10 @@ public class FormularioUsuariosViewModel extends AbstractViewModel implements  E
 	@Override
 	public void onEvent(SortEvent event) throws Exception {
 		// TODO Auto-generated method stub
-		if(event.getTarget() instanceof Listheader){
+		Component component = event.getTarget();
+		if(component instanceof Listheader){
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fieldSort",  event.getTarget().getId().toString());
+			parametros.put("fieldSort",  ((Listheader) component).getValue().toString());
 			parametros.put("sortDirection", event.isAscending());
 			ejecutarGlobalCommand("cambiarPersonas", parametros );
 		}
@@ -120,12 +121,12 @@ public class FormularioUsuariosViewModel extends AbstractViewModel implements  E
 			switch (tipoSeleccionado.getValor()) {
 			case 1:
 				parametros = (Map<String, Object>) servicioControlUsuario.consultarEmpleadosSinUsuarios(
-						personaFiltro, page, PAGE_SIZE);
+						personaFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 				personasSinUsuario = (List<Persona>) parametros.get("empleados");
 				break;
 			case 2:
 				parametros = (Map<String, Object>) servicioControlUsuario.consultarClientesSinUsuarios(
-						personaFiltro, page, PAGE_SIZE);
+						personaFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 				personasSinUsuario = (List<Persona>) parametros.get("clientes");
 				break;
 			default: return;
@@ -168,7 +169,7 @@ public class FormularioUsuariosViewModel extends AbstractViewModel implements  E
 	public void guardar(@BindingParam("txtPassword") Textbox txtPassword){
 		if(personaSeleccionada.getCedula()!=null && !txtPassword.getValue().toString().equalsIgnoreCase("")){
 			usuario.setActivo(true);
-			usuario.asignarUsuario(personaSeleccionada);
+			usuario.setPersona(personaSeleccionada);
 			servicioControlUsuario.grabarUsuario(usuario);
 			mostrarMensaje("Informacion", "Usuario Creado Exitosamente", null, null, null, null);
 			personaSeleccionada = new Persona() {
@@ -185,7 +186,13 @@ public class FormularioUsuariosViewModel extends AbstractViewModel implements  E
 	
 	@Command
 	public void salir(){
+		
 		ejecutarGlobalCommand("cambiarUsuarios", null);
+		
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("fieldSort",  null);
+		parametros.put("sortDirection", null);
+		ejecutarGlobalCommand("cambiarUsuariosNoGrupo", parametros);
 	}
 
 	/**SETTERS Y GETTERS*/

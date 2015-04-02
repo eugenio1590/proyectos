@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,25 +25,16 @@ public class Group implements Serializable {
 
 	@Column(name="group_name", nullable=false, length=50)
 	private String groupName;
-
-	//bi-directional many-to-many association to Authority
-	@ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
-	@JoinTable(
-		name="group_authorities"
-		, joinColumns={
-			@JoinColumn(name="group_id", nullable=false)
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="authority_id", nullable=false)
-			}
-		)
-	private List<Authority> authorities;
+	
+	@Column(name="authority", nullable=false, length=100)
+	private String authority;
 
 	//bi-directional many-to-one association to GroupMember
-	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<GroupMember> groupMembers;
 
 	public Group() {
+		groupMembers = new ArrayList<GroupMember>();
 	}
 
 	public Integer getId() {
@@ -61,12 +53,12 @@ public class Group implements Serializable {
 		this.groupName = groupName;
 	}
 
-	public List<Authority> getAuthorities() {
-		return this.authorities;
+	public String getAuthority() {
+		return authority;
 	}
 
-	public void setAuthorities(List<Authority> authorities) {
-		this.authorities = authorities;
+	public void setAuthority(String authority) {
+		this.authority = authority;
 	}
 
 	public List<GroupMember> getGroupMembers() {
@@ -74,7 +66,8 @@ public class Group implements Serializable {
 	}
 
 	public void setGroupMembers(List<GroupMember> groupMembers) {
-		this.groupMembers = groupMembers;
+		this.groupMembers.clear();
+		this.groupMembers.addAll(groupMembers);
 	}
 
 	public GroupMember addGroupMember(GroupMember groupMember) {

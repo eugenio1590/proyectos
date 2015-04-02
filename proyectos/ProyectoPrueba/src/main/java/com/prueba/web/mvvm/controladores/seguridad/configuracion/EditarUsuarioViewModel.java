@@ -54,7 +54,7 @@ public class EditarUsuarioViewModel extends AbstractViewModel implements EventLi
 	public void doAfterCompose(@ContextParam(ContextType.VIEW) Component view,
 			@ExecutionArgParam("usuario") Usuario usuario){
 		super.doAfterCompose(view);
-		persona = usuario.obtenerUsuario();
+		persona = usuario.getPersona();
 		this.usuario = usuario;
 		this.usuario.setPasword(null);
 		username = this.usuario.getUsername();

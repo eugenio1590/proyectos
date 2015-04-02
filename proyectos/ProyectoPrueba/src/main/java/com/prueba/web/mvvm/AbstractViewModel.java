@@ -208,6 +208,24 @@ public abstract class AbstractViewModel {
 	}
 	
 	/**
+	 * Descripcion: permitira leer los parametros que se pasan como parametro por la url
+	 * @param nombre: nombre del parametro
+	 * Retorno: el valor del parametro en String
+	 * */
+	protected String leerParametro(String nombre){
+		return Executions.getCurrent().getParameter(nombre);
+	}
+	
+	/**
+	 * Descripcion: permitira leer un atributo de la url
+	 * @param nombre: nombre del atributo
+	 * Retorno: el valor del atributo en String
+	 * */
+	protected String leerAtributoURL(String nombre){
+		return (String) Executions.getCurrent().getAttribute(nombre);
+	}
+	
+	/**
 	 * Descripcion: Mostrara un mensaje en pantalla sobre algun tipo de mensaje que se requiera
 	 * Parametros: 
 	 * @param titulo: titulo del mensaje

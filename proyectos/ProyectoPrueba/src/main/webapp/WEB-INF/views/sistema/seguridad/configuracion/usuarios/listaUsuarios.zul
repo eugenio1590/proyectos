@@ -31,8 +31,8 @@
 				</auxheader>
 			</auxhead>
 			<listhead menupopup="auto">
-				<listheader id="id" label="Codigo" sort="auto(id)"/>
-				<listheader id="username" label="Username" sort="auto(username)"/>
+				<listheader value="id" label="Codigo" sort="auto(id)"/>
+				<listheader value="username" label="Username" sort="auto(username)"/>
 				<listheader label="Estado" sort="none"/>
 				<listheader label="Foto" sort="none" align="center"/>
 				<listheader label="Operaciones" width="20%" sort="none"/>

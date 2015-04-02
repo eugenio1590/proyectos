@@ -6,5 +6,6 @@ import com.prueba.web.model.Cliente;
 import com.prueba.web.model.Persona;
 
 public interface ClienteDAO extends PersonaDAO<Cliente> {
-	public List<Cliente> consultarClientesSinUsuario(Persona clienteF, int start, int limit);
+	public List<Cliente> consultarClientesSinUsuario(Persona clienteF, String fieldSort, Boolean sortDirection,
+			int start, int limit);
 }

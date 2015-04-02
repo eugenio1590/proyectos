@@ -1,8 +1,10 @@
 <zk>
 	<window border="none" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.ListaGruposViewModel')">
-		<listbox id="gridGrupos" mold="paging" checkmark="true" multiple="true"
-			selectedItems="@bind(vm.gruposSeleccionados)" model="@load(vm.grupos)">
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.ListaGruposViewModel',
+		checkmark=true, multiple=true)">
+		<listbox id="gridGrupos" mold="paging" checkmark="@bind(vm.checkmark)" multiple="@bind(vm.multiple)"
+			selectedItems="@bind(vm.gruposSeleccionados)" model="@load(vm.grupos)"
+			emptyMessage="No se han encontrado Grupos registrados">
 			<auxhead sclass="nombre-center">
 				<auxheader colspan="1">
 					<div sclass="z-icon-filter bigger-200"/>
@@ -14,7 +16,7 @@
 				</auxheader>
 			</auxhead>
 			<listhead menupopup="auto">
-				<listheader id="groupName" label="Nombre" sort="auto(groupName)"/>
+				<listheader value="groupName" label="Nombre" sort="auto(groupName)"/>
 				<listheader label="Operaciones" width="20%" sort="none"/>
 			</listhead>
 			<template name="model">
@@ -23,10 +25,16 @@
 					<listcell>
 						<div sclass=" action">
                 			<a iconSclass="z-icon-pencil green bigger-200" tooltiptext="Editar"
+                				visible="@bind(vm.editar)"
                 				onClick="@command('editarGrupo', grupo = each)"/>
                 				
                 			<a iconSclass="z-icon-trash-o red bigger-200" tooltiptext="Eliminar"
+                				visible="@bind(vm.eliminar)"
                 				onClick="@command('eliminarGrupo', grupo = each)"/>
+                				
+                			<a iconSclass="fa fa-wrench bigger-200" tooltiptext="Configurar Accesos" 
+                				visible="@bind(vm.acceso)"
+                				onClick="@command('configurarAcceso', grupo = each)"/>
               			</div>
 					</listcell>
 				</listitem>
