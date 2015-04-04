@@ -32,6 +32,10 @@ public class Group implements Serializable {
 	//bi-directional many-to-one association to GroupMember
 	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<GroupMember> groupMembers;
+	
+	//bi-directional many-to-one association to GroupMenu
+	@OneToMany(mappedBy="group")
+	private List<GroupMenu> groupMenus; 
 
 	public Group() {
 		groupMembers = new ArrayList<GroupMember>();

@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.prueba.web.seguridad.configuracion.dao.GroupMemberDAO;
+import com.prueba.web.seguridad.configuracion.dao.GroupMenuDAO;
 import com.prueba.web.seguridad.configuracion.dao.GrupoDAO;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.Persona;
-import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.service.impl.AbstractServiceImpl;
 import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
@@ -25,6 +25,10 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	@Autowired
 	@BeanInjector("groupMemberDAO")
 	private GroupMemberDAO groupMemberDAO;
+	
+	@Autowired
+	@BeanInjector("groupMenuDAO")
+	private GroupMenuDAO groupMenuDAO;
 	
 	//Grupos
 	@Override
@@ -72,6 +76,16 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 		parametros.put("miembros", groupMemberDAO.consultarUsuariosAsignadosGrupo(personaF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
 	}
+	
+	//Menu de Grupos
+	@Override
+	public Map<String, Object> consultarPadresMenuAsignadoGrupo(int idGrupo, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", groupMenuDAO.consultarPadresMenuAsignadoGrupo(idGrupo, 0, -1).size());
+		parametros.put("menu", groupMenuDAO.consultarPadresMenuAsignadoGrupo(idGrupo, pagina*limit, limit));
+		return parametros;
+	}
+	
 	/**SETTERS Y GETTERS*/
 	public GrupoDAO getGrupoDAO() {
 		return grupoDAO;
@@ -81,5 +95,19 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 		this.grupoDAO = grupoDAO;
 	}
 
-	
+	public GroupMemberDAO getGroupMemberDAO() {
+		return groupMemberDAO;
+	}
+
+	public void setGroupMemberDAO(GroupMemberDAO groupMemberDAO) {
+		this.groupMemberDAO = groupMemberDAO;
+	}
+
+	public GroupMenuDAO getGroupMenuDAO() {
+		return groupMenuDAO;
+	}
+
+	public void setGroupMenuDAO(GroupMenuDAO groupMenuDAO) {
+		this.groupMenuDAO = groupMenuDAO;
+	}
 }

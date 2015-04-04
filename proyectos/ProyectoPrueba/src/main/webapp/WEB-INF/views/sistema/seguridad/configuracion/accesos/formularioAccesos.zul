@@ -1,0 +1,52 @@
+<zk>
+	<window id="winAcceso" title="Registrar Accesos" border="none" width="1200px" height="500px" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.FormularioAccesosViewModel')">
+		
+		<borderlayout>
+			<north hflex="1" border="none">
+				<panel>
+					<panelchildren>
+						<label value="Nombre del Grupo:" />
+						<textbox id="txtNombre" value="@bind(vm.grupo.groupName)"
+							tabindex="1" readonly="true" />
+					</panelchildren>
+				</panel>
+			</north>
+			
+			<west width="50%" hflex="1" title="Menu de Opciones">
+				<vlayout>
+					<tree id="treeMenuNoAsignado" multiple="true" checkmark="true" 
+						model="@load(vm.menuNoAsignadoTree)">
+						<template name="model">
+							<treeitem onOpen="@command('openChild', component = self,  nodo = each, wOpen=false)">
+								<treerow>
+									<treecell label="@bind(each.data.getLabel())"
+										onClick="@command('openChild', component = self,  nodo = each, wOpen=true)" />
+								</treerow>
+							</treeitem>
+						</template>
+					</tree>
+					<paging id="pagMenuNoAsignado" onPaging="@command('paginarLista', tipo=1)" autohide="true" />
+				</vlayout>
+			</west>
+
+			<east width="50%" hflex="1" title="Menu del Grupo">
+				<vlayout>
+					<tree multiple="true" checkmark="true" 
+						model="@load(vm.menuAsignadoTree)">
+						<template name="model">
+							<treeitem>
+								<treerow>
+									<treecell label="@bind(each.data.getLabel())" />
+								</treerow>
+							</treeitem>
+						</template>
+					</tree>
+					<paging id="pagMenuAsignado" onPaging="@command('paginarLista', tipo=2)" autohide="true" />
+				</vlayout>
+			</east>
+			
+		</borderlayout>
+	</window>
+</zk>

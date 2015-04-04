@@ -84,7 +84,8 @@ public class ListaUsuariosViewModel extends AbstractViewModel implements EventLi
 	public void cambiarUsuarios(@Default("0") @BindingParam("page") int page, 
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
-		Map<String, Object> parametros = servicioControlUsuario.consultarUsuarios(usuarioFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
+		Map<String, Object> parametros = servicioControlUsuario.consultarUsuarios(
+				usuarioFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 		Integer total = (Integer) parametros.get("total");
 		usuarios = (List<Usuario>) parametros.get("usuarios");
 		gridUsuarios.setMultiple(true);

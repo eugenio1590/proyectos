@@ -95,7 +95,6 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 			this.grupo = new Group();
 			usuariosGrupo = new ArrayList<GroupMember>();
 			this.grupo.setGroupMembers(usuariosGrupo);
-			//Faltan los Usuario del No Grupo
 			cambiarUsuariosNoGrupo(0, null, null);
 		}
 		else{
@@ -137,7 +136,8 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
 		int idGrupo = (this.grupo.getId()==null) ? -1 : this.grupo.getId();
-		Map<String, Object> parametros = servicioControlUsuario.consultarUsuariosNoAsignadosGrupo(usuarioFiltro, idGrupo, fieldSort, sortDirection, page, PAGE_SIZE);
+		Map<String, Object> parametros = servicioControlUsuario.consultarUsuariosNoAsignadosGrupo(
+				usuarioFiltro, idGrupo, fieldSort, sortDirection, page, PAGE_SIZE);
 		Integer total = (Integer) parametros.get("total");
 		usuariosNoGrupo = (List<Usuario>) parametros.get("usuarios");
 		gridUsuariosNoGrupo.setMultiple(true);
@@ -152,7 +152,8 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
 		int idGrupo = (this.grupo.getId()==null) ? -1 : this.grupo.getId();
-		Map<String, Object> parametros = servicioControlGrupo.consultarMiembrosGrupo(miembroFiltro, idGrupo, fieldSort, sortDirection, page, PAGE_SIZE); 
+		Map<String, Object> parametros = servicioControlGrupo.consultarMiembrosGrupo(
+				miembroFiltro, idGrupo, fieldSort, sortDirection, page, PAGE_SIZE); 
 		Integer total = (Integer) parametros.get("total");
 		usuariosGrupo = (List<GroupMember>) parametros.get("miembros");
 		gridMiembrosGrupo.setMultiple(true);
@@ -170,6 +171,26 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 			break;
 		case 2: cambiarUsuariosGrupo(0, null, null);
 			break;
+		default: break;
+		}
+	}
+	
+	@Command
+	@NotifyChange({"usuariosNoGrupo", "usuariosGrupo"})
+	public void paginarLista(@BindingParam("tipo") int tipo){
+		int page;
+		switch (tipo) {
+		case 1:
+			page = this.pagUsuariosNoGrupo.getActivePage();
+			cambiarUsuariosGrupo(page, null, null);
+			
+			break;
+		case 2:
+			page = this.pagMiembrosGrupo.getActivePage();
+			cambiarUsuariosGrupo(page, null, null);
+			
+			break;
+			
 		default: break;
 		}
 	}
@@ -224,7 +245,6 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 	}
 
 	/**SETTERS Y GETTERS*/
-	
 	public ServicioControlUsuario getServicioControlUsuario() {
 		return servicioControlUsuario;
 	}

@@ -10,11 +10,14 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 
+import org.springframework.stereotype.Repository;
+
 import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Persona;
 import com.prueba.web.seguridad.configuracion.dao.GroupMemberDAO;
 
+@Repository
 public class GroupMemberDAOImpl extends AbstractJpaDao<GroupMember, Integer> implements GroupMemberDAO {
 
 	public GroupMemberDAOImpl() {

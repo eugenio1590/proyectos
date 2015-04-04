@@ -1,0 +1,22 @@
+<zk>
+	<window border="none" apply="org.zkoss.bind.BindComposer">
+		<tabbox height="100%">
+			<tabs height="100%">
+				<tab label="Por Grupo" />
+				<tab label="Por Lote" />
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+					<include src="/WEB-INF/views/sistema/seguridad/configuracion/grupos/listaGrupos.zul"
+						checkmark="false" multiple="false"
+						editar="false" eliminar="false"
+						acceso="true"
+					/>
+				</tabpanel>
+				<tabpanel>
+
+				</tabpanel>
+			</tabpanels>
+		</tabbox>
+	</window>
+</zk>

@@ -212,6 +212,30 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	
 	//2. Menus
 	@Override
+	public Map<String, Object> consultarRootPadres(int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", menuDAO.consultarRootPadres(0, -1).size());
+		parametros.put("menu", menuDAO.consultarRootPadres(pagina*limit, limit));
+		return parametros;
+	}
+	
+	@Override
+	public Map<String, Object> consultarSubRamas(int idPadre, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", menuDAO.consultarSubRamas(idPadre, 0, -1).size());
+		parametros.put("menu", menuDAO.consultarSubRamas(idPadre, pagina*limit, limit));
+		return parametros;
+	}
+	
+	@Override
+	public Map<String, Object> consultarHijosNoAsignadoGrupo(int idGrupo, int idPadre, int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre, 0, -1).size());
+		parametros.put("menu", menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre, pagina*limit, limit));
+		return parametros;
+	}
+	
+	@Override
 	public List<Menu> consultarMenus() {
 		// TODO Auto-generated method stub
 		return this.menuDAO.consultarPadres();

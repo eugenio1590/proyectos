@@ -9,10 +9,13 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
+import org.springframework.stereotype.Repository;
+
 import com.prueba.web.seguridad.dao.HistoryLoginDAO;
 import com.prueba.web.model.HistoryLogin;
 import com.prueba.web.dao.impl.AbstractJpaDao;
 
+@Repository
 public class HistoryLoginDAOImpl extends AbstractJpaDao<HistoryLogin, Integer> implements HistoryLoginDAO {
 
 	public HistoryLoginDAOImpl() {

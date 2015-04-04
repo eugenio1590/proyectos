@@ -12,6 +12,8 @@
 		<class>com.prueba.web.model.Cliente</class>
 		<class>com.prueba.web.model.Empleado</class>
 		<class>com.prueba.web.model.Persona</class>
+		<class>com.prueba.web.model.GroupMenu</class>
+		<class>com.prueba.web.model.Arbol</class>
 		 <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
             <property name="hibernate.show_sql" value="true" />

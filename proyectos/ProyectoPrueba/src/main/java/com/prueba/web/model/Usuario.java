@@ -59,7 +59,6 @@ public class Usuario implements Serializable {
 	@AnyMetaDef(idType="integer", metaType="string",
 			metaValues={
 					/**USUARIOS ESPECIFICOS*/
-					/*value puede ser omitido*/
 					@MetaValue(targetEntity=Empleado.class, value="E"),
 					@MetaValue(targetEntity=Cliente.class, value="C")
 			}

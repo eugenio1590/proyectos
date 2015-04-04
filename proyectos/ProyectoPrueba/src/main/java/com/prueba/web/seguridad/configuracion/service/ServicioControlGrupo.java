@@ -14,4 +14,6 @@ public interface ServicioControlGrupo {
 	//Miembros de Grupos
 	public Map<String, Object> consultarMiembrosGrupo(Persona personaF, int idGrupo,
 			String fieldSort, Boolean sortDirection, int pagina, int limit);
+	//Menu de Grupos
+	public Map<String, Object> consultarPadresMenuAsignadoGrupo(int idGrupo, int pagina, int limit);
 }

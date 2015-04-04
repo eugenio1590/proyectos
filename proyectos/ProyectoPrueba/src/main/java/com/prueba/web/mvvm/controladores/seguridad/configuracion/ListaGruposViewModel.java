@@ -14,7 +14,6 @@ import org.zkoss.bind.annotation.Default;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.SortEvent;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -87,7 +86,8 @@ public class ListaGruposViewModel extends AbstractViewModel implements EventList
 			@BindingParam("fieldSort") String fieldSort, 
 			@BindingParam("sortDirection") Boolean sortDirection){
 		
-		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(grupoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
+		Map<String, Object> parametros = servicioControlGrupo.consultarGrupos(
+				grupoFiltro, fieldSort, sortDirection, page, PAGE_SIZE);
 		Integer total =  (Integer) parametros.get("total");
 		grupos = (List<Group>) parametros.get("grupos");
 		gridGrupos.setMultiple(multiple);

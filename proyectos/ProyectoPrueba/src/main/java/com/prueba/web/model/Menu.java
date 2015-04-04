@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import com.prueba.web.mvvm.ModelNavbar;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,13 +14,10 @@ import java.util.List;
 @Entity
 @Table(name="menu")
 @NamedQuery(name="Menu.findAll", query="SELECT m FROM Menu m")
-public class Menu implements Serializable, ModelNavbar{
+@PrimaryKeyJoinColumn(name="id_menu", columnDefinition="integer")
+public class Menu extends Arbol implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name="id_menu", unique=true, nullable=false)
-	private Integer idMenu;
-
+	
 	@Column(length=255)
 	private String actividad;
 
@@ -35,25 +29,12 @@ public class Menu implements Serializable, ModelNavbar{
 
 	@Column(length=255)
 	private String ruta;
-
-	//bi-directional many-to-one association to Menu
-	@ManyToOne
-	@JoinColumn(name="id_padre")
-	private Menu padre;
-
-	//bi-directional many-to-one association to Menu
-	@OneToMany(mappedBy="padre")
-	private List<Menu> hijos;
+	
+	//bi-directional many-to-one association to GroupMenu
+	@OneToMany(mappedBy="menu", fetch=FetchType.LAZY)
+	private List<GroupMenu> groupMenus;
 
 	public Menu() {
-	}
-
-	public Integer getIdMenu() {
-		return this.idMenu;
-	}
-
-	public void setIdMenu(Integer idMenu) {
-		this.idMenu = idMenu;
 	}
 
 	public String getActividad() {
@@ -88,22 +69,6 @@ public class Menu implements Serializable, ModelNavbar{
 		this.ruta = ruta;
 	}
 
-	public Menu getPadre() {
-		return this.padre;
-	}
-
-	public void setPadre(Menu menu) {
-		this.padre = menu;
-	}
-
-	public List<Menu> getHijos() {
-		return this.hijos;
-	}
-
-	public void setHijos(List<Menu> hijos) {
-		this.hijos = hijos;
-	}
-
 	public Menu addHijo(Menu menu) {
 		getHijos().add(menu);
 		menu.setPadre(this);
@@ -117,9 +82,16 @@ public class Menu implements Serializable, ModelNavbar{
 
 		return menu;
 	}
+	
+	public List<GroupMenu> getGroupMenus() {
+		return groupMenus;
+	}
 
-	/**INTERFAZ*/
-	//1.ModelNavbar
+	public void setGroupMenus(List<GroupMenu> groupMenus) {
+		this.groupMenus = groupMenus;
+	}
+	
+	/**METODOS OVERRIDE*/
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
@@ -138,14 +110,26 @@ public class Menu implements Serializable, ModelNavbar{
 		return this.getRuta();
 	}
 
-	@Override
-	public List<ModelNavbar> getChilds() {
-		// TODO Auto-generated method stub
-		List<ModelNavbar> temp = new ArrayList<ModelNavbar>();
-		if(this.hijos!=null)
-			for(Menu menu : this.getHijos())
-				temp.add(menu);
-		return temp;
+	/**METODOS PROPIOS DE LA CLASE*/
+	public Menu getParentRoot(){
+		Menu rootParent=(Menu) padre;
+		while(rootParent!=null)
+			rootParent = (Menu) rootParent.padre;
+		return rootParent;
 	}
-
+	
+	public Boolean isRootParent(){
+		return (this.padre==null);
+	}
+	
+	//Hijos
+	public Menu getParent(Integer id){
+		Menu parent=(Menu) padre;
+		if(parent!=null)
+			while(parent.getId()!=id && parent.getPadre()!=null)
+				parent = (Menu) parent.padre;
+		else
+			parent = this;
+		return parent;
+	}
 }

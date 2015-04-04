@@ -7,4 +7,6 @@ public interface ModelNavbar {
 	public String getIcon();
 	public String getUriLocation();
 	public List<ModelNavbar> getChilds();
+	public <T> T[] childToArray(Class<?> clazz);
+	public <T> T[] childToArray(Class<?> clazz, int element);
 }

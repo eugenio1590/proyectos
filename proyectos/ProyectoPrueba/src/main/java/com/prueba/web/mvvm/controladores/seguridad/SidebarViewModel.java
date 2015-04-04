@@ -60,12 +60,19 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
 		// TODO Auto-generated method stub
 		Navitem item = navbar.getSelectedItem();
 		
-		insertComponent(navbar.getPage(), "#mainInclude", item.getAttribute("locationUri").toString());
+		Object locationUri = item.getAttribute("locationUri");
+		
+		if(locationUri!=null){
+		
+			insertComponent(navbar.getPage(), "#mainInclude", locationUri.toString());
         
-        if(hrefEnlacesMenu==null)
-        	hrefEnlacesMenu = (Div) findComponent(navbar.getPage(), "#hrefEnlacesMenu");
+			if(hrefEnlacesMenu==null)
+				hrefEnlacesMenu = (Div) findComponent(navbar.getPage(), "#hrefEnlacesMenu");
         
-        crearEncabezadoMenu(item);
+			crearEncabezadoMenu(item);
+		}
+		else
+			; //Se colocara luego
 	}
 	
 	/**METODOS PROPIOS DE LA CLASE*/

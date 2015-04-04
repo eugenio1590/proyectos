@@ -3,7 +3,6 @@ package com.prueba.web.model;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 
 /**
@@ -26,16 +25,16 @@ public class Articulo implements Serializable {
 	@Column(length=10)
 	private String codigo;
 
-	@Column(precision=131089)
+	@Column(precision=1000)
 	private BigDecimal costo;
 
-	@Column(length=2147483647)
-	private String existencia;
+	@Column(precision=1000)
+	private BigDecimal existencia;
 
 	@Column(length=100)
 	private String nombre;
 
-	@Column(precision=131089)
+	@Column(precision=1000)
 	private BigDecimal precio;
 
 	public Articulo() {
@@ -73,11 +72,11 @@ public class Articulo implements Serializable {
 		this.costo = costo;
 	}
 
-	public String getExistencia() {
+	public BigDecimal getExistencia() {
 		return this.existencia;
 	}
 
-	public void setExistencia(String existencia) {
+	public void setExistencia(BigDecimal existencia) {
 		this.existencia = existencia;
 	}
 

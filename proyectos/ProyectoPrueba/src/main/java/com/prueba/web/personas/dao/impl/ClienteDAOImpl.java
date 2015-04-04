@@ -1,18 +1,16 @@
 package com.prueba.web.personas.dao.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+
+import org.springframework.stereotype.Repository;
 
 import com.prueba.web.personas.dao.ClienteDAO;
 import com.prueba.web.model.Cliente;
 import com.prueba.web.model.Persona;
 
+@Repository
 public class ClienteDAOImpl extends PersonaDAOImpl<Cliente> implements ClienteDAO {
 	
 	public ClienteDAOImpl() {

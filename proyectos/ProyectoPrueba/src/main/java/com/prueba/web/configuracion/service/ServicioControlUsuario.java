@@ -35,5 +35,8 @@ public interface ServicioControlUsuario {
 	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, String fieldSort, Boolean sortDirection, 
 			int pagina, int limit);
 	//Menu
+	public Map<String, Object> consultarRootPadres(int pagina, int limit);
+	public Map<String, Object> consultarSubRamas(int idPadre, int pagina, int limit);
+	public Map<String, Object> consultarHijosNoAsignadoGrupo(int idGrupo, int idPadre, int pagina, int limit);
 	public List<Menu> consultarMenus();
 }

@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Entity
 @Table(name="persona")
 @Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn(name="PERSON_TYPE")
 public abstract class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
