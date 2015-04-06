@@ -111,7 +111,6 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 	@NotifyChange("usuarios")
 	public void onEvent(SortEvent event) throws Exception {
 		Component component = event.getTarget();
-		System.out.println("PASO EVENTO");
 		if(component instanceof Listheader){
 			Listbox gridParent = (Listbox) component.getParent().getParent();
 			if(gridParent.equals(gridMiembrosGrupo)){
@@ -234,8 +233,6 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 	@Command
 	public void guardar(){
 		if(operacion.equalsIgnoreCase("Insertar") || operacion.equalsIgnoreCase("Modificar")){
-			for(GroupMember miembro : usuariosGrupo)
-				System.out.println(miembro.getUsuario().getUsername());
 			grupo.setGroupMembers(usuariosGrupo);
 			servicioControlGrupo.registrarOActualizarGrupo(grupo);
 		}

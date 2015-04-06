@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import com.prueba.web.mvvm.ModelNavbar;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +36,10 @@ public class Menu extends Arbol implements Serializable {
 	//bi-directional many-to-one association to GroupMenu
 	@OneToMany(mappedBy="menu", fetch=FetchType.LAZY)
 	private List<GroupMenu> groupMenus;
+	
+	//bi-directional many-to-one association to Operacion
+	@ManyToMany(mappedBy="menus", fetch=FetchType.LAZY)
+	private List<Operacion> operacions;
 
 	public Menu() {
 	}
@@ -91,7 +98,20 @@ public class Menu extends Arbol implements Serializable {
 		this.groupMenus = groupMenus;
 	}
 	
+	public List<Operacion> getOperacions() {
+		return operacions;
+	}
+
+	public void setOperacions(List<Operacion> operacions) {
+		this.operacions = operacions;
+	}
+
 	/**METODOS OVERRIDE*/
+	@Override
+	public int getIdNode(){
+		return this.getId();
+	}
+	
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
@@ -109,6 +129,14 @@ public class Menu extends Arbol implements Serializable {
 		// TODO Auto-generated method stub
 		return this.getRuta();
 	}
+	
+	@Override
+	public List<ModelNavbar> getRootTree() {
+		// TODO Auto-generated method stub
+		List<ModelNavbar> rootTree = new ArrayList<ModelNavbar>();
+		calculateRootTree(rootTree, this);
+		return rootTree;
+	}
 
 	/**METODOS PROPIOS DE LA CLASE*/
 	public Menu getParentRoot(){
@@ -116,10 +144,6 @@ public class Menu extends Arbol implements Serializable {
 		while(rootParent!=null)
 			rootParent = (Menu) rootParent.padre;
 		return rootParent;
-	}
-	
-	public Boolean isRootParent(){
-		return (this.padre==null);
 	}
 	
 	//Hijos

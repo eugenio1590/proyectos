@@ -2,6 +2,8 @@ package com.prueba.web.model;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.*;
@@ -54,6 +56,16 @@ public abstract class Arbol implements ModelNavbar {
 	/**INTERFAZ*/
 	//1. ModelNavbar
 	@Override
+	public ModelNavbar getParent(){
+		return this.getPadre();
+	}
+	
+	@Override
+	public Boolean isRootParent(){
+		return (this.getPadre()==null);
+	}
+	
+	@Override
 	public List<ModelNavbar> getChilds() {
 		// TODO Auto-generated method stub
 		List<ModelNavbar> temp = new ArrayList<ModelNavbar>();
@@ -75,5 +87,29 @@ public abstract class Arbol implements ModelNavbar {
 		// TODO Auto-generated method stub
 		return getChilds().toArray( (T[]) Array.newInstance(clazz, element));
 	}
-
+	
+	/**METODOS PROPIOS DE LA CLASE*/
+	protected void calculateRootTree(List<ModelNavbar> root, ModelNavbar nodo){
+		if(nodo.isRootParent())
+			root.add(nodo);
+		else {
+			calculateRootTree(root, nodo.getParent());
+			root.add(nodo);
+		}
+	}
+	
+	/**METODOS ESTATICOS DE LA CLASE*/
+	public static Comparator<Arbol> getComparator(){
+		return new Comparator<Arbol>() {
+			@Override
+			public int compare(Arbol a1, Arbol a2) {
+				// TODO Auto-generated method stub
+				return a1.getId().compareTo(a2.getId());
+			}
+		};
+	}
+	
+	public static void ordenarListaArbol(List<? extends Arbol> listaArbol){
+		Collections.sort(listaArbol, getComparator());
+	}
 }

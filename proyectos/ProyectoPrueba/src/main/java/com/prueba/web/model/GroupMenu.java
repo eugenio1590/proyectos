@@ -1,8 +1,12 @@
 package com.prueba.web.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
+
+import com.prueba.web.mvvm.ModelNavbar;
 
 @Entity
 @Table(name="group_menu")
@@ -21,7 +25,9 @@ public class GroupMenu extends Arbol implements Serializable {
 	@JoinColumn(name="group_id")
 	private Group group;
 	
-	//Lista de Operaciones
+	//bi-directional many-to-one association to Operacion
+	@ManyToMany(mappedBy="groupMenus", fetch=FetchType.LAZY)
+	private List<Operacion> operacions;
 
 	public GroupMenu() {
 	}
@@ -42,7 +48,20 @@ public class GroupMenu extends Arbol implements Serializable {
 		this.group = group;
 	}
 
+	public List<Operacion> getOperacions() {
+		return operacions;
+	}
+
+	public void setOperacions(List<Operacion> operacions) {
+		this.operacions = operacions;
+	}
+
 	/**METODOS OVERRIDE*/
+	@Override
+	public int getIdNode(){
+		return this.getMenu().getId();
+	}
+	
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
@@ -59,5 +78,13 @@ public class GroupMenu extends Arbol implements Serializable {
 	public String getUriLocation() {
 		// TODO Auto-generated method stub
 		return this.getMenu().getRuta();
+	}
+	
+	@Override
+	public List<ModelNavbar> getRootTree() {
+		// TODO Auto-generated method stub
+		List<ModelNavbar> rootTree = new ArrayList<ModelNavbar>();
+		calculateRootTree(rootTree, this.getMenu());
+		return rootTree;
 	}
 }
