@@ -3,6 +3,7 @@ package com.prueba.web.seguridad.configuracion.service;
 import java.util.Map;
 
 import com.prueba.web.model.Group;
+import com.prueba.web.model.GroupMenu;
 import com.prueba.web.model.Persona;
 
 public interface ServicioControlGrupo {
@@ -16,4 +17,5 @@ public interface ServicioControlGrupo {
 			String fieldSort, Boolean sortDirection, int pagina, int limit);
 	//Menu de Grupos
 	public Map<String, Object> consultarPadresMenuAsignadoGrupo(int idGrupo, int pagina, int limit);
+	public GroupMenu actualizarGroupMenu(GroupMenu groupMenu);
 }

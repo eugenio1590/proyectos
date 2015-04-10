@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="empleado")
 @NamedQuery(name="Empleado.findAll", query="SELECT e FROM Empleado e")
-@PrimaryKeyJoinColumn(name="id_empleado", columnDefinition="integer")
+@PrimaryKeyJoinColumn(name="id_empleado")
 public class Empleado extends Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

@@ -25,8 +25,9 @@ public class Usuario implements Serializable {
 
 	@Id
 	//@Generated(GenerationTime.INSERT)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(columnDefinition="serial", unique=true, nullable=false, insertable=false, updatable=false)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="usuario_id_seq")
+	@SequenceGenerator(name="usuario_id_seq", sequenceName="usuario_id_seq", initialValue=1, allocationSize=1)
+	@Column(insertable=false, updatable=false)
 	private Integer id;
 
 	@Column
@@ -64,7 +65,7 @@ public class Usuario implements Serializable {
 			}
 	)
 	@OneToOne
-	@JoinColumn(name="persona_id",columnDefinition="integer")
+	@JoinColumn(name="persona_id")
 	private Persona persona;
 
 	public Usuario() {
@@ -161,23 +162,6 @@ public class Usuario implements Serializable {
 	public void setPersona(Persona persona) {
 		this.persona = persona;
 	}
-	
-	/*
-	public Empleado getEmpleado() {
-		return empleado;
-	}
-
-	public void setEmpleado(Empleado empleado) {
-		this.empleado = empleado;
-	}
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}*/
 
 	/**METODOS PROPIOS DE LA CLASE*/
 	public String getFoto64(){

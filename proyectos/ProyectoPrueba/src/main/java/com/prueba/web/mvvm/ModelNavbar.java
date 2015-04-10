@@ -3,6 +3,7 @@ package com.prueba.web.mvvm;
 import java.util.List;
 
 public interface ModelNavbar {
+	public void setParent(ModelNavbar parent);
 	public int getIdNode();
 	public String getLabel();
 	public String getIcon();

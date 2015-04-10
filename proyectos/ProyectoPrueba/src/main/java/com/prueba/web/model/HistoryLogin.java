@@ -18,7 +18,8 @@ public class HistoryLogin implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="history_logins_id_seq")
+	@SequenceGenerator(name="history_logins_id_seq", sequenceName="history_logins_id_seq", initialValue=1, allocationSize=1)
 	private Integer id;
 
 	@Column(name="date_login")

@@ -16,8 +16,9 @@ public class GroupMember implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, columnDefinition="serial")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="group_members_id_seq")
+	@SequenceGenerator(name="group_members_id_seq", sequenceName="group_members_id_seq", initialValue=1, allocationSize=1)
+	@Column(unique=true, nullable=false)
 	private Integer id;
 
 	//bi-directional many-to-one association to Group

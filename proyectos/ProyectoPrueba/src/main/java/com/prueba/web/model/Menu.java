@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name="menu")
 @NamedQuery(name="Menu.findAll", query="SELECT m FROM Menu m")
-@PrimaryKeyJoinColumn(name="id_menu", columnDefinition="integer")
+@PrimaryKeyJoinColumn(name="id_menu")
 public class Menu extends Arbol implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

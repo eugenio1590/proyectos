@@ -46,7 +46,7 @@ public class AbstractJpaDao<T, ID extends Serializable> implements IGenericDao<T
 	
 	private Class<T> persistenceClass = null;
 	
-	@PersistenceContext(unitName="puProyectoPrueba", type = PersistenceContextType.EXTENDED)
+	@PersistenceContext(type = PersistenceContextType.EXTENDED) //unitName="puProyectoPrueba", 
 	protected HibernateEntityManager classEntityManager;
 	protected CriteriaBuilder criteriaBuilder;
 	protected CriteriaQuery<T> query;

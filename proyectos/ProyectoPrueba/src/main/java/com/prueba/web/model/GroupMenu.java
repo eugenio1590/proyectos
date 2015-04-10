@@ -11,13 +11,13 @@ import com.prueba.web.mvvm.ModelNavbar;
 @Entity
 @Table(name="group_menu")
 @NamedQuery(name="GroupMenu.findAll", query="SELECT g FROM GroupMenu g")
-@PrimaryKeyJoinColumn(name="id_group_menu", columnDefinition="integer")
+@PrimaryKeyJoinColumn(name="id_group_menu")
 public class GroupMenu extends Arbol implements Serializable {
 	private static final long serialVersionUID = 1L;
 		
 	//bi-directional many-to-one association to Menu
 	@ManyToOne
-	@JoinColumn(name="menu_id", columnDefinition="integer")
+	@JoinColumn(name="menu_id")
 	private Menu menu;
 	
 	//bi-directional many-to-one association to Group
@@ -26,10 +26,20 @@ public class GroupMenu extends Arbol implements Serializable {
 	private Group group;
 	
 	//bi-directional many-to-one association to Operacion
-	@ManyToMany(mappedBy="groupMenus", fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinTable(
+		name="group_menu_operacion"
+		, joinColumns={
+			@JoinColumn(name="id_group_menu")
+				}
+		, inverseJoinColumns={	
+			@JoinColumn(name="id_operacion")
+			}
+		)
 	private List<Operacion> operacions;
 
 	public GroupMenu() {
+		this.operacions=new ArrayList<Operacion>();
 	}
 
 	public Menu getMenu() {

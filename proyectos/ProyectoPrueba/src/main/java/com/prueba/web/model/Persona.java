@@ -16,8 +16,9 @@ public abstract class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id", columnDefinition = "serial", unique=true, nullable=false)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="persona_id_seq")
+	@SequenceGenerator(name="persona_id_seq", sequenceName="persona_id_seq", initialValue=1, allocationSize=1)
+	@Column(name="id", unique=true, nullable=false)
 	private Integer id;
 	
 	@Column(unique=true, nullable=false)

@@ -7,6 +7,8 @@ import javax.persistence.*;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -21,8 +23,9 @@ public class Operacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_operacion", columnDefinition="serial")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="operacion_id_seq")
+	@SequenceGenerator(name="operacion_id_seq", sequenceName="operacion_id_seq", initialValue=1, allocationSize=1)
+	@Column(name="id_operacion")
 	private Integer idOperacion;
 
 	@Column(name="nombre")
@@ -33,25 +36,16 @@ public class Operacion implements Serializable {
 	@JoinTable(
 			name="menu_operacion"
 			, joinColumns={
-				@JoinColumn(name="id_operacion", columnDefinition="integer")
+				@JoinColumn(name="id_operacion")
 				}
 			, inverseJoinColumns={
-				@JoinColumn(name="id_menu", columnDefinition="integer")
+				@JoinColumn(name="id_menu")
 				}
 			)
 	private List<Menu> menus;
 
 	//bi-directional many-to-many association to GroupMenu
-	@ManyToMany(cascade=CascadeType.ALL)
-	@JoinTable(
-		name="group_menu_operacion"
-		, joinColumns={
-			@JoinColumn(name="id_operacion", columnDefinition="integer")
-			}
-		, inverseJoinColumns={	
-			@JoinColumn(name="id_group_menu", columnDefinition="integer")
-			}
-		)
+	@ManyToMany(mappedBy="operacions", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<GroupMenu> groupMenus;
 
 	public Operacion() {
@@ -88,6 +82,22 @@ public class Operacion implements Serializable {
 
 	public void setGroupMenus(List<GroupMenu> groupMenus) {
 		this.groupMenus = groupMenus;
+	}
+	
+	/**METODOS ESTATICOS DE LA CLASE*/
+	public static Comparator<Operacion> getComparator(){
+		return new  Comparator<Operacion>() {
+
+			@Override
+			public int compare(Operacion operacion1, Operacion operacion2) {
+				// TODO Auto-generated method stub
+				return operacion1.getIdOperacion().compareTo(operacion2.getIdOperacion());
+			}
+		};
+	}
+	
+	public static void ordenarListaOperacion(List<Operacion> operaciones){
+		Collections.sort(operaciones, getComparator());
 	}
 
 }

@@ -10,6 +10,7 @@ import com.prueba.web.seguridad.configuracion.dao.GroupMemberDAO;
 import com.prueba.web.seguridad.configuracion.dao.GroupMenuDAO;
 import com.prueba.web.seguridad.configuracion.dao.GrupoDAO;
 import com.prueba.web.model.Group;
+import com.prueba.web.model.GroupMenu;
 import com.prueba.web.model.Persona;
 import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.service.impl.AbstractServiceImpl;
@@ -84,6 +85,15 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 		parametros.put("total", groupMenuDAO.consultarPadresMenuAsignadoGrupo(idGrupo, 0, -1).size());
 		parametros.put("menu", groupMenuDAO.consultarPadresMenuAsignadoGrupo(idGrupo, pagina*limit, limit));
 		return parametros;
+	}
+	
+	@Override
+	public GroupMenu actualizarGroupMenu(GroupMenu groupMenu) {
+		// TODO Auto-generated method stub
+		if(groupMenu.getId()!=null)
+			return this.groupMenuDAO.save(groupMenu);
+		else
+			return this.groupMenuDAO.update(groupMenu);
 	}
 	
 	/**SETTERS Y GETTERS*/

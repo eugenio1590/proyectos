@@ -222,6 +222,26 @@ public abstract class AbstractViewModel {
 	}
 	
 	/**
+	 * Descripcion: notificara los cambios de la variable pasada como parametro
+	 * @param nombre: nombre de la variable
+	 * Retorno: Ninguno
+	 * */
+	protected void notificarCambios(String nombre){
+		BindUtils.postNotifyChange(null,null,this, nombre);
+	}
+	
+	/**
+	 * Descripcion: notificara los cambios de las variables pasadas como parametro en un arreglo
+	 * @param nombres: array de nombre de las variables
+	 * Retorno: Ninguno
+	 * */
+	protected void notificarCambios(String[] nombres){
+		for(String nombre : nombres){
+			notificarCambios(nombre);
+		}
+	}
+	
+	/**
 	 * Descripcion: Mostrara un mensaje en pantalla sobre algun tipo de mensaje que se requiera
 	 * Parametros: 
 	 * @param titulo: titulo del mensaje

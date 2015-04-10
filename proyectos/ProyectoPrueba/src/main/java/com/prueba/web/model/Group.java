@@ -19,7 +19,8 @@ public class Group implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="groups_id_seq")
+	@SequenceGenerator(name="groups_id_seq", sequenceName="groups_id_seq", initialValue=1, allocationSize=1)
 	@Column(unique=true, nullable=false)
 	private Integer id;
 
@@ -34,7 +35,7 @@ public class Group implements Serializable {
 	private List<GroupMember> groupMembers;
 	
 	//bi-directional many-to-one association to GroupMenu
-	@OneToMany(mappedBy="group")
+	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<GroupMenu> groupMenus; 
 
 	public Group() {

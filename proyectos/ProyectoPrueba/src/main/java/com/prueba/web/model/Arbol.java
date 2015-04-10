@@ -15,12 +15,13 @@ import com.prueba.web.mvvm.ModelNavbar;
 public abstract class Arbol implements ModelNavbar {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, columnDefinition="serial")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="arbol_id_seq")
+	@SequenceGenerator(name="arbol_id_seq", sequenceName="arbol_id_seq", initialValue=1, allocationSize=1)
+	@Column(unique=true, nullable=false)
 	protected Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="id_padre", columnDefinition="integer")
+	@JoinColumn(name="id_padre")
 	protected Arbol padre;
 	
 	@OneToMany(mappedBy="padre", fetch=FetchType.LAZY)
@@ -55,6 +56,12 @@ public abstract class Arbol implements ModelNavbar {
 
 	/**INTERFAZ*/
 	//1. ModelNavbar
+	@Override
+	public void setParent(ModelNavbar parent) {
+		// TODO Auto-generated method stub
+		this.setPadre((Arbol) parent);
+	}
+	
 	@Override
 	public ModelNavbar getParent(){
 		return this.getPadre();
