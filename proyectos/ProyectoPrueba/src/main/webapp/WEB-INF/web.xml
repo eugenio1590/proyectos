@@ -22,8 +22,12 @@
 		<display-name>ZK Session cleaner</display-name>
 		<listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
 	</listener>
+	 <listener>
+    	<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  	</listener>
 
 	<!-- Processes application requests -->
+	<!-- 1. Spring-JPA -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -33,6 +37,7 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<!-- 2. ZK -->
 	<servlet>
 		<description>
 		The ZK loader for ZUML pages</description>
@@ -50,6 +55,20 @@
 		<servlet-name>auEngine</servlet-name>
 		<servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
 	</servlet>
+	<!-- JERSEY -->
+	<servlet>
+    	<servlet-name>jersey-servlet</servlet-name>
+    	<servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+    	<init-param>
+      		<param-name>com.sun.jersey.config.property.packages</param-name>
+      		<param-value>com.prueba.web.service.web</param-value>
+    	</init-param>
+    	<init-param>
+      		<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+      		<param-value>true</param-value>
+    	</init-param>
+    	<load-on-startup>2</load-on-startup>
+  	</servlet>
 	
 	<!-- Spring Security -->
 	<filter>
@@ -62,6 +81,8 @@
   		<url-pattern>/*</url-pattern>
 	</filter-mapping>	
 	
+	<!-- Mapero de Direcciones -->
+	<!-- 1. Spring-JPA-ZK -->
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
@@ -78,7 +99,16 @@
 		<servlet-name>auEngine</servlet-name>
 		<url-pattern>/zkau/*</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
+	
+	
+	<!-- 2. JERSEY -->
+  	<servlet-mapping>
+    	<servlet-name>jersey-servlet</servlet-name>
+    	<url-pattern>/rest/*</url-pattern>
+  	</servlet-mapping>
+  
+  	<!-- Archivo de Inicio -->
+  	<welcome-file-list>
 		<welcome-file>index.zul</welcome-file>
 	</welcome-file-list>
 

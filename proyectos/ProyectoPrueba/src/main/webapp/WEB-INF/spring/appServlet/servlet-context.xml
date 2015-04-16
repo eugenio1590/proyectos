@@ -56,7 +56,9 @@
 	
 	<!-- Support Annotation -->
 	<beans:bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />  
+	<!-- 
 	<beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	-->
     
     <context:annotation-config />
     <!-- DAO -->
@@ -83,6 +85,4 @@
 		<beans:property name="entityManagerFactory" ref="entityManagerFactory"/>
 	</beans:bean>
     
-    
-	
 </beans:beans>

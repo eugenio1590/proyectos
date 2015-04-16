@@ -1,9 +1,11 @@
 <?page title="Auto Generated index.zul"?>
 <?link href="resources/css/grid.css" rel="stylesheet" type="text/css"?>
+
 <window id="ventana" title="Hello World!!" border="normal" width="800px"
 	apply="org.zkoss.bind.BindComposer"
 	viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.InicioViewModel')">
-
+	<script src="/resources/js/sistema/reportes.js" />
+    <div id="content" onCreate="@command('mostrarReporte')" />
 	<label value="You are using: ${desktop.webApp.version}" /><space/>
 	<button id="login" label="Iniciar Session" onClick="@command('iniciarSession')"/>
 	<!-- 

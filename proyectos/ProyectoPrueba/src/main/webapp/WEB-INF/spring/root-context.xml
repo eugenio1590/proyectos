@@ -9,6 +9,7 @@
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<security:http pattern="/css/**" security="none"/>
+	<security:http pattern="/rest/**" security="none"/>
 	
 	<!-- Enable the @Secured annotation to secure service layer methods -->
 	<security:global-method-security secured-annotations="enabled" />
