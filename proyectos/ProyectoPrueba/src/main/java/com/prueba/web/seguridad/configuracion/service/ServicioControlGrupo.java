@@ -1,5 +1,6 @@
 package com.prueba.web.seguridad.configuracion.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.prueba.web.model.Group;
@@ -17,5 +18,6 @@ public interface ServicioControlGrupo {
 			String fieldSort, Boolean sortDirection, int pagina, int limit);
 	//Menu de Grupos
 	public Map<String, Object> consultarPadresMenuAsignadoGrupo(int idGrupo, int pagina, int limit);
-	public GroupMenu actualizarGroupMenu(GroupMenu groupMenu);
+	public boolean actualizarGroupMenu(List<GroupMenu> menuNuevo, int idGrupo, int pagina, int limit);
+	public Map<String, Object> consultarNodosDistintosHijosMenuUsuario(int idUsuario, int pagina, int limit);
 }

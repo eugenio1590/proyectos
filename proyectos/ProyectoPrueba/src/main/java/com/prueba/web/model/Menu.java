@@ -37,8 +37,17 @@ public class Menu extends Arbol implements Serializable {
 	@OneToMany(mappedBy="menu", fetch=FetchType.LAZY)
 	private List<GroupMenu> groupMenus;
 	
-	//bi-directional many-to-one association to Operacion
-	@ManyToMany(mappedBy="menus", fetch=FetchType.LAZY)
+	//bi-directional many-to-many association to Operacion
+	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	@JoinTable(
+		name="menu_operacion"
+		, joinColumns={
+			@JoinColumn(name="id_menu")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="id_operacion")
+			}
+		)
 	private List<Operacion> operacions;
 
 	public Menu() {

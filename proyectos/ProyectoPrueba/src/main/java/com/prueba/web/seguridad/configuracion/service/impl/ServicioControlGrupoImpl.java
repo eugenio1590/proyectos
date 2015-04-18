@@ -1,6 +1,7 @@
 package com.prueba.web.seguridad.configuracion.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,12 +89,36 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	}
 	
 	@Override
-	public GroupMenu actualizarGroupMenu(GroupMenu groupMenu) {
+	public boolean actualizarGroupMenu(List<GroupMenu> menuNuevo, int idGrupo, int pagina, int limit) {
 		// TODO Auto-generated method stub
-		if(groupMenu.getId()!=null)
-			return this.groupMenuDAO.save(groupMenu);
-		else
-			return this.groupMenuDAO.update(groupMenu);
+		boolean exito = true;
+		try {
+			List<GroupMenu> padres = groupMenuDAO.consultarPadresMenuAsignadoGrupo(idGrupo, pagina*limit, limit);
+			for(GroupMenu padre : padres)
+				groupMenuDAO.delete(padre);
+
+			for(GroupMenu nodo : menuNuevo)
+				if(nodo.getPadre()==null) //La relacion Cascade del Padre registra a sus hijos tambien.
+					if(nodo.getId()!=null)
+						groupMenuDAO.update(nodo);
+					else
+						groupMenuDAO.save(nodo);
+		}
+		catch (Exception e){
+			System.out.println("Error al Actualizar el Menu del Grupo: "+e.getMessage());
+			exito = false;
+		}
+		
+		return exito;
+	}
+	
+	@Override
+	public Map<String, Object> consultarNodosDistintosHijosMenuUsuario(int idUsuario, int pagina, int limit) {
+		// TODO Auto-generated method stub
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", groupMenuDAO.consultarNodosDistintosHijosMenuUsuario(idUsuario, 0, -1).size());
+		parametros.put("menu", groupMenuDAO.consultarNodosDistintosHijosMenuUsuario(idUsuario, pagina*limit, limit));
+		return parametros;
 	}
 	
 	/**SETTERS Y GETTERS*/

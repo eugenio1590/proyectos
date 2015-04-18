@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.prueba.web.configuracion.dao.MenuDAO;
+import com.prueba.web.configuracion.dao.OperacionDAO;
 import com.prueba.web.configuracion.dao.UsuarioDAO;
 import com.prueba.web.personas.dao.ClienteDAO;
 import com.prueba.web.personas.dao.EmpleadoDAO;
@@ -56,6 +57,10 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Autowired
 	@BeanInjector("menuDAO")
 	private MenuDAO menuDAO;
+	
+	@Autowired
+	@BeanInjector("operacionDAO")
+	private OperacionDAO operacionDAO;
 
 	public ServicioControlUsuarioImpl() {
 		// TODO Auto-generated constructor stub
@@ -235,10 +240,13 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 		return parametros;
 	}
 	
+	//Operaciones - Menu
 	@Override
-	public List<Menu> consultarMenus() {
-		// TODO Auto-generated method stub
-		return this.menuDAO.consultarPadres();
+	public Map<String, Object> consultarOperaciones(int pagina, int limit){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		parametros.put("total", operacionDAO.countAll());
+		parametros.put("operaciones", operacionDAO.findAll(pagina*limit, limit));
+		return parametros;
 	}
 	
 	/**METODOS PROPIOS DE LA CLASE*/
@@ -291,5 +299,13 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 
 	public void setMenuDAO(MenuDAO menuDAO) {
 		this.menuDAO = menuDAO;
+	}
+
+	public OperacionDAO getOperacionDAO() {
+		return operacionDAO;
+	}
+
+	public void setOperacionDAO(OperacionDAO operacionDAO) {
+		this.operacionDAO = operacionDAO;
 	}
 }

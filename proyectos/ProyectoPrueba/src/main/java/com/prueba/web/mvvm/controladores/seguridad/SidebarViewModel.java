@@ -2,7 +2,9 @@ package com.prueba.web.mvvm.controladores.seguridad;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -17,10 +19,12 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Span;
 
-import com.prueba.web.model.Menu;
+import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.AbstractViewModel;
 import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.mvvm.ModelNavbar;
+import com.prueba.web.mvvm.ModelTree;
+import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
 import com.prueba.web.configuracion.service.ServicioControlUsuario;
 
 public class SidebarViewModel extends AbstractViewModel implements SerializableEventListener{
@@ -30,6 +34,9 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
 	//Servicios
 	@BeanInjector("servicioControlUsuario")
 	private ServicioControlUsuario servicioControlUsuario;
+	
+	@BeanInjector("servicioControlGrupo")
+	private ServicioControlGrupo servicioControlGrupo;
 	
 	//GUI
 	@Wire("#navbar")
@@ -45,12 +52,9 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
 	public void doAfterCompose(@ContextParam(ContextType.VIEW) Component view){
 		super.doAfterCompose(view);
 		
-		List<ModelNavbar> modelo = new ArrayList<ModelNavbar>();
-		
-		for(Menu menu : servicioControlUsuario.consultarMenus())
-			modelo.add(menu);
-		
-		constructMenu(modelo, this.navbar);
+		UserDetails user = this.getUser();
+		Usuario usuario = servicioControlUsuario.consultarUsuario(user.getUsername(), user.getPassword());
+		construirMenuUsuario(usuario.getId());
 	}
 
 	/**INTERFACES*/
@@ -130,6 +134,20 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
         
         hrefEnlacesMenu.appendChild(nuevoEnlace);
 	}
+	
+	/*
+	 * Descripcion: Construira el menu del usuario de acuerdo al id respectivo del mismo
+	 * @param idUsuario: id del usuario que ha ingresado session
+	 * Retorno: Ninguno
+	 * */
+	protected void construirMenuUsuario(int idUsuario){
+		Map<String, Object> parametros = servicioControlGrupo.consultarNodosDistintosHijosMenuUsuario(idUsuario, 0, -1);
+		ModelTree<ModelNavbar> menu = new ModelTree<ModelNavbar>();
+		List<ModelNavbar> menuGrupo = (List<ModelNavbar>) parametros.get("menu");
+		for(ModelNavbar menuG : menuGrupo)
+			menu.addNode(menuG, true);
+		constructMenu(menu.getRootParent(), this.navbar);
+	}
 
 	/**SETTERS Y GETTERS*/
 	public ServicioControlUsuario getServicioControlUsuario() {
@@ -139,5 +157,13 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
 	public void setServicioControlUsuario(
 			ServicioControlUsuario servicioControlUsuario) {
 		this.servicioControlUsuario = servicioControlUsuario;
+	}
+
+	public ServicioControlGrupo getServicioControlGrupo() {
+		return servicioControlGrupo;
+	}
+
+	public void setServicioControlGrupo(ServicioControlGrupo servicioControlGrupo) {
+		this.servicioControlGrupo = servicioControlGrupo;
 	}
 }

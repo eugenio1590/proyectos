@@ -1,9 +1,9 @@
 package com.prueba.web.mvvm.controladores.seguridad.configuracion;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -15,15 +15,19 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Paging;
-import org.zkoss.zul.Tree;
+import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 import com.prueba.web.configuracion.service.ServicioControlUsuario;
+import com.prueba.web.model.Arbol;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMenu;
 import com.prueba.web.model.Menu;
@@ -32,7 +36,7 @@ import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.mvvm.ModelTree;
 import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
 
-public class FormularioAccesosViewModel extends AbstractViewModel {
+public class FormularioAccesosViewModel extends AbstractViewModel implements EventListener<Messagebox.ClickEvent>{
 	
 	//Servicios
 	@BeanInjector("servicioControlUsuario")
@@ -41,10 +45,7 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 	@BeanInjector("servicioControlGrupo")
 	private ServicioControlGrupo servicioControlGrupo;
 	
-	//GUI
-	@Wire("#treeMenuNoAsignado")
-	private Tree treeMenuNoAsignado;
-	
+	//GUI	
 	@Wire("#pagMenuNoAsignado")
 	private Paging pagMenuNoAsignado;
 	
@@ -53,10 +54,10 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 	
 	//Modelos
 	private ModelTree<Menu> menuNoAsignadoTree;
-	private List<Menu> menuNoAsignado;
+	private Set<DefaultTreeNode<Menu>> nodosNoAsignadosTree;
 	
 	private ModelTree<GroupMenu> menuAsignadoTree;
-	private List<GroupMenu> menuAsignado;
+	private Set<DefaultTreeNode<GroupMenu>> nodosAsignadosTree;
 	
 	private Group grupo;
 	
@@ -74,13 +75,32 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 		cambiarMenuAsignadoGrupo(0);
 	}
 	
+	/**Interface*/
+	//1. EventListener<Messagebox.ClickEvent>
+	@Override
+	public void onEvent(ClickEvent event) throws Exception {
+		// TODO Auto-generated method stub
+		if (Messagebox.Button.YES.equals(event.getButton())) {
+			guardar(false);
+			paginarLista(2, false);
+			notificarCambios("menuAsignadoTree");
+		}
+		else if (Messagebox.Button.NO.equals(event.getButton())){
+			paginarLista(2, false);
+			notificarCambios("menuAsignadoTree");
+		}else if (Messagebox.Button.CANCEL.equals(event.getButton())) {
+			int page = pagMenuAsignado.getActivePage();
+			pagMenuAsignado.setActivePage(page-1);
+		}
+	}	
+	
 	/**GLOBAL COMMAND*/
 	@GlobalCommand
 	@NotifyChange("menuNoAsignadoTree")
 	public void cambiarMenuNoAsignadoGrupo(@Default("0") int page){
 		Map<String, Object> parametros = servicioControlUsuario.consultarRootPadres(page, PAGE_SIZE);
 		Integer total = (Integer) parametros.get("total");
-		menuNoAsignado = (List<Menu>) parametros.get("menu");
+		List<Menu> menuNoAsignado = (List<Menu>) parametros.get("menu");
 		menuNoAsignadoTree = new ModelTree<Menu>(menuNoAsignado.toArray(new Menu[]{}), true, true, true);
 		pagMenuNoAsignado.setActivePage(page);
 		pagMenuNoAsignado.setTotalSize(total);
@@ -92,15 +112,16 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 		Map<String, Object> parametros = servicioControlGrupo.consultarPadresMenuAsignadoGrupo(
 				grupo.getId(), page, PAGE_SIZE);
 		Integer total = (Integer) parametros.get("total");
-		menuAsignado = (List<GroupMenu>) parametros.get("menu");
+		List<GroupMenu> menuAsignado = (List<GroupMenu>) parametros.get("menu");
 		menuAsignadoTree = new ModelTree<GroupMenu>(menuAsignado.toArray(new GroupMenu[]{}), true, true, false);
+		pagMenuNoAsignado.setActivePage(page);
 		pagMenuAsignado.setTotalSize(total);
 	}
 	
 	/**COMMAND*/
 	@Command
-	@NotifyChange({"menuNoAsignadoTree"})
-	public void paginarLista(@BindingParam("tipo") int tipo){
+	@NotifyChange({"menuNoAsignadoTree", "menuAsignadoTree"})
+	public void paginarLista(@BindingParam("tipo") int tipo, @Default("true") Boolean withAdvert){
 		int page;
 		switch (tipo) {
 		case 1:
@@ -110,8 +131,17 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 			break;
 			
 		case 2:
-			page = pagMenuAsignado.getActivePage();
-			cambiarMenuAsignadoGrupo(page);
+			if(withAdvert){
+				mostrarMensaje("Advertencia", "Los cambios efectuados anteriormente no se efectuaran. "+
+					"Desea guardar antes de cambiar de pagina?", Messagebox.EXCLAMATION, new Messagebox.Button[]{
+						Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL}, this, null);
+			}
+			else {
+				page = pagMenuAsignado.getActivePage();
+				System.out.println("PAGINA "+page);
+				cambiarMenuAsignadoGrupo(page);
+			}
+			
 			break;
 
 		default:break;
@@ -121,7 +151,7 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 	@Command
 	public void openChild(@BindingParam("component") Component component,
 			@BindingParam("nodo") DefaultTreeNode<Menu> nodo,
-			@BindingParam("wOpen") Boolean wOpen){
+			@Default("false") @BindingParam("wOpen") Boolean wOpen){
 		Treeitem treeItem = null;
 		if(component instanceof Treecell){
 			Treecell treCell = (Treecell) component;
@@ -140,10 +170,54 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 			treeItem.setOpen((open) ? false : true);
 		}
 		
-		if(!open)
+		if(!open && nodo!=null)
 			openChild(nodo);
 	}
 	
+	@Command
+	@NotifyChange({"menuAsignadoTree", "nodosNoAsignadosTree", "menuNoAsignadoTree", "nodosAsignadosTree"})
+	public void agregarSeleccionados(@BindingParam("tipo") int tipo){
+		switch (tipo) {
+		case 1: moveSelectedTree(menuNoAsignadoTree, menuAsignadoTree, nodosNoAsignadosTree); break;
+			
+		case 2: moveSelectedTree(menuAsignadoTree, menuNoAsignadoTree, nodosAsignadosTree); break;
+
+		default: break;
+		}
+	}
+	
+	@Command
+	public void mostrarEdicionOperaciones(@BindingParam("nodo") DefaultTreeNode nodo,
+			@BindingParam("editar") boolean editar){
+		Map<String, Object> parametros = new HashMap<String, Object>();
+		GroupMenu grupoMenu = null;
+		if(nodo.getData() instanceof GroupMenu)
+			grupoMenu = (GroupMenu) nodo.getData();
+		else {
+			TreeNode<GroupMenu> nodoTemp = this.menuAsignadoTree.findNode((GroupMenu) getInstanceToMove((Arbol) nodo.getData()));
+			if(nodoTemp!=null)
+				grupoMenu = nodoTemp.getData();
+			else {
+				return;
+			} //Se Mostrara un Mensaje
+		}
+		
+		parametros.put("grupoMenu", grupoMenu);
+		parametros.put("editar", editar);
+		crearModal("/WEB-INF/views/sistema/seguridad/configuracion/accesos/listaOperaciones.zul", parametros);
+	}
+	
+	@Command
+	@NotifyChange("*")
+	public void guardar(@Default("false") @BindingParam("wMensaje") Boolean wMensaje){
+		int page = pagMenuAsignado.getActivePage(); //Numero de pagina actual
+		List<GroupMenu> menuGrupo = menuAsignadoTree.toList();
+		if(servicioControlGrupo.actualizarGroupMenu(menuGrupo, this.grupo.getId(), page, PAGE_SIZE) && wMensaje)
+			mostrarMensaje("Informacion", "Actualizacion Exitosa del Menu", null, null, null, null);
+		else if(wMensaje)
+			mostrarMensaje("Error", "Ha Ocurrido un Error al Actualizar el menu del Grupo", Messagebox.ERROR, null, null, null);
+	}
+
 	/**METODOS PROPIOS DE LA CLASE*/
 	private void openChild(DefaultTreeNode<Menu> nodo){
 		Map<String, Object> parametros;
@@ -153,15 +227,46 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 		parametros=servicioControlUsuario.consultarHijosNoAsignadoGrupo(grupo.getId(), idNodo, 0, -1);
 		List<Menu> hijosNoAsignados = (List<Menu>) parametros.get("menu");
 		subRamas.addAll(hijosNoAsignados);
-		Collections.sort(subRamas, new Comparator<Menu>() {
-			@Override
-			public int compare(Menu m1, Menu m2) {
-				// TODO Auto-generated method stub
-				return m1.getId().compareTo(m2.getId());
-			}
-		});
+		Arbol.ordenarListaArbol(subRamas);
 		Menu[] child=subRamas.toArray(new Menu[]{});
 		menuNoAsignadoTree.loadChild(nodo, child);
+	}
+	
+	/**TODAVIA TIENE ERRORES*/
+	private <T extends Arbol, Y extends Arbol> void moveSelectedTree(
+			ModelTree<T> origen, 
+			ModelTree<Y> destino, 
+			Set<DefaultTreeNode<T>> seleccion){
+		
+		if(seleccion!=null){
+			for(DefaultTreeNode<T> nodo : seleccion){
+				System.out.println("NODO A AGREGAR");
+				System.out.println(nodo.getData().getLabel());
+				System.out.println("---FIN---");
+				
+				Y model = getInstanceToMove(nodo.getData());
+				destino.addNode(model, false);
+				origen.removeNode(nodo, false);
+			}
+			
+			seleccion.clear();
+			origen.sort(true);
+			destino.sort(true);
+		}
+	}
+	
+	private <T extends Arbol> T getInstanceToMove(Arbol data){
+		Arbol instancia = null;
+		if(data instanceof Menu){
+			instancia = new GroupMenu();
+			((GroupMenu) instancia).setGroup(grupo);
+			((GroupMenu) instancia).setMenu((Menu) data);
+		}
+		else if(data instanceof GroupMenu){
+			instancia = ((GroupMenu) data).getMenu();
+			((GroupMenu) data).setMenu(null);
+		}
+		return (T) instancia;
 	}
 
 	/**SETTERS Y GETTERS*/
@@ -197,20 +302,30 @@ public class FormularioAccesosViewModel extends AbstractViewModel {
 	public void setMenuAsignadoTree(ModelTree<GroupMenu> menuAsignadoTree) {
 		this.menuAsignadoTree = menuAsignadoTree;
 	}
+	
+	public Set<DefaultTreeNode<Menu>> getNodosNoAsignadosTree() {
+		return nodosNoAsignadosTree;
+	}
 
-	public List<Menu> getMenuNoAsignado() {
-		return menuNoAsignado;
+	public void setNodosNoAsignadosTree(
+			Set<DefaultTreeNode<Menu>> nodosNoAsignadosTree) {
+		this.nodosNoAsignadosTree = nodosNoAsignadosTree;
 	}
-	
-	public void setMenuNoAsignado(List<Menu> menuNoAsignado) {
-		this.menuNoAsignado = menuNoAsignado;
+
+	public Set<DefaultTreeNode<GroupMenu>> getNodosAsignadosTree() {
+		return nodosAsignadosTree;
 	}
-	
+
+	public void setNodosAsignadosTree(
+			Set<DefaultTreeNode<GroupMenu>> nodosAsignadosTree) {
+		this.nodosAsignadosTree = nodosAsignadosTree;
+	}
+
 	public Group getGrupo() {
 		return grupo;
 	}
 	
 	public void setGrupo(Group grupo) {
 		this.grupo = grupo;
-	}	
+	}
 }

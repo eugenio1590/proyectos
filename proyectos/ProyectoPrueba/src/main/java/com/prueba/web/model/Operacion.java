@@ -32,20 +32,13 @@ public class Operacion implements Serializable {
 	private String nombre;
 
 	//bi-directional many-to-many association to Menu
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-	@JoinTable(
-			name="menu_operacion"
-			, joinColumns={
-				@JoinColumn(name="id_operacion")
-				}
-			, inverseJoinColumns={
-				@JoinColumn(name="id_menu")
-				}
-			)
+	@ManyToMany(mappedBy="operacions", cascade={CascadeType.MERGE, CascadeType.PERSIST}, 
+			fetch=FetchType.LAZY)
 	private List<Menu> menus;
 
 	//bi-directional many-to-many association to GroupMenu
-	@ManyToMany(mappedBy="operacions", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToMany(mappedBy="operacions", cascade={CascadeType.MERGE, CascadeType.PERSIST}, 
+			fetch=FetchType.LAZY)
 	private List<GroupMenu> groupMenus;
 
 	public Operacion() {

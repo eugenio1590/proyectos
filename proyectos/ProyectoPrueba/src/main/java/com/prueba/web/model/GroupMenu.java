@@ -16,7 +16,7 @@ public class GroupMenu extends Arbol implements Serializable {
 	private static final long serialVersionUID = 1L;
 		
 	//bi-directional many-to-one association to Menu
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="menu_id")
 	private Menu menu;
 	
@@ -26,7 +26,7 @@ public class GroupMenu extends Arbol implements Serializable {
 	private Group group;
 	
 	//bi-directional many-to-one association to Operacion
-	@ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToMany(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinTable(
 		name="group_menu_operacion"
 		, joinColumns={
@@ -40,6 +40,15 @@ public class GroupMenu extends Arbol implements Serializable {
 
 	public GroupMenu() {
 		this.operacions=new ArrayList<Operacion>();
+	}
+	
+	public GroupMenu(Menu menu){
+		this.menu = menu;
+	}
+	
+	public GroupMenu(Menu menu, Object hijos){
+		this.menu = menu;
+		this.hijos = (List) hijos;
 	}
 
 	public Menu getMenu() {
@@ -94,7 +103,7 @@ public class GroupMenu extends Arbol implements Serializable {
 	public List<ModelNavbar> getRootTree() {
 		// TODO Auto-generated method stub
 		List<ModelNavbar> rootTree = new ArrayList<ModelNavbar>();
-		calculateRootTree(rootTree, this.getMenu());
+		calculateRootTree(rootTree, (this.getPadre()==null) ? this.getMenu() : this);
 		return rootTree;
 	}
 }

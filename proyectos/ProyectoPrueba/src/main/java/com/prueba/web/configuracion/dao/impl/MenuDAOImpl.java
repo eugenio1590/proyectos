@@ -89,28 +89,4 @@ public class MenuDAOImpl extends ArbolDAOImpl<Menu> implements MenuDAO {
 		orders.put("id", true);
 		return this.ejecutarCriteria(concatenaArrayPredicate(restricciones), orders, start, limit);
 	}
-	
-	@Override
-	public List<Menu> consultarPadres() {
-		// TODO Auto-generated method stub
-		//1. Creamos el Criterio de busqueda
-		this.crearCriteria();
-
-		//2. Generamos los Joins
-		this.crearJoins(null);
-
-		//3. Creamos las Restricciones de la busqueda
-		List<Predicate> restricciones = new ArrayList<Predicate>();
-
-		restricciones.add(
-				this.criteriaBuilder.isNull(this.entity.get("padre"))
-		);
-		
-		//4. Creamos los campos de ordenamiento y ejecutamos
-		Map<String, Boolean> orders = new HashMap<String, Boolean>();
-		orders.put("id", true);
-		return this.ejecutarCriteria(concatenaArrayPredicate(restricciones), orders, 0, -1);
-	}
-
-	
 }

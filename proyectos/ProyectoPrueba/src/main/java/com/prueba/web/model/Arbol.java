@@ -20,11 +20,11 @@ public abstract class Arbol implements ModelNavbar {
 	@Column(unique=true, nullable=false)
 	protected Integer id;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_padre")
 	protected Arbol padre;
 	
-	@OneToMany(mappedBy="padre", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="padre", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
 	protected List<Arbol> hijos;
 
 	public Arbol() {

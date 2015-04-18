@@ -32,7 +32,7 @@
         <beans:property name="username" value="postgres" />
         <beans:property name="password" value="postgres" />
         <beans:property name="maxActive" value="100" /> <!-- indica el número máximo de conexiones que pueden usarse. -->
-        <beans:property name="maxIdle" value="30"/> <!-- indica el número máximo de conexiones que puede haber esperando a que llegue un usuario para usarlas.  -->
+        <beans:property name="maxIdle" value="30"/> <!-- indica el límite de conexiones que debe haber disponibles en el pool.  -->
         <beans:property name="maxWait" value="10000"/> <!-- indica el tiempo en ms que esperará Tomcat a que haya una conexión libre en caso de que no hubiera ninguna libre en ese instante. -->
   	</beans:bean>
 	

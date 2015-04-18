@@ -8,16 +8,25 @@
 				<panel>
 					<panelchildren>
 						<label value="Nombre del Grupo:" />
-						<textbox id="txtNombre" value="@bind(vm.grupo.groupName)"
+						<textbox id="txtNombre" value="@bind(vm.grupo.groupName)" 
 							tabindex="1" readonly="true" />
 					</panelchildren>
 				</panel>
 			</north>
-			
-			<west width="50%" hflex="1" title="Menu de Opciones">
+
+			<west width="50%" hflex="1">
 				<vlayout>
-					<tree id="treeMenuNoAsignado" multiple="true" checkmark="true" 
-						model="@load(vm.menuNoAsignadoTree)">
+					<toolbar>
+						<toolbarbutton height="35px"
+							image="/resources/img/icons/ButtonArrowRight32.png"
+							tooltiptext="Agregar Miembros"
+							onClick="@command('agregarSeleccionados', tipo=1)" />
+					</toolbar>
+					<tree multiple="true" checkmark="true" model="@load(vm.menuNoAsignadoTree)" 
+						selectedItems="@bind(vm.nodosNoAsignadosTree)">
+						 <treecols>
+            				<treecol label="Menu de Opciones" />
+        				</treecols>
 						<template name="model">
 							<treeitem onOpen="@command('openChild', component = self,  nodo = each, wOpen=false)">
 								<treerow>
@@ -31,14 +40,35 @@
 				</vlayout>
 			</west>
 
-			<east width="50%" hflex="1" title="Menu del Grupo">
+			<east width="50%" hflex="1">
 				<vlayout>
-					<tree multiple="true" checkmark="true" 
-						model="@load(vm.menuAsignadoTree)">
+					<toolbar>
+						<toolbarbutton height="35px"
+							image="/resources/img/icons/ButtonArrowLeft32.png"
+							tooltiptext="Remover Miembros"
+							onClick="@command('agregarSeleccionados', tipo=2)" />
+					</toolbar>
+					<tree multiple="true" checkmark="true" model="@load(vm.menuAsignadoTree)"
+						selectedItems="@bind(vm.nodosAsignadosTree)">
+						 <treecols>
+            				<treecol label="Menu del Grupo" />
+            				<treecol label="Operaciones" width="20%"/>
+        				</treecols>
 						<template name="model">
 							<treeitem>
 								<treerow>
-									<treecell label="@bind(each.data.getLabel())" />
+									<treecell label="@bind(each.data.getLabel())" 
+										onClick="@command('openChild', component = self, wOpen=true)" />
+									<treecell>
+										<div sclass=" action">
+											<a iconSclass="z-icon-pencil green bigger-200" tooltiptext="Editar Acceso a Operaciones"
+                								onClick="@command('mostrarEdicionOperaciones', nodo = each, editar=true)" 
+                								if="${empty each.data.getChilds()}"/>
+                							<a iconSclass="z-icon-eye bigger-200" tooltiptext="Mostrar Acceso a Operaciones"
+                								onClick="@command('mostrarEdicionOperaciones', nodo = each, editar=false)" 
+                								if="${empty each.data.getChilds()}"/>
+										</div>
+									</treecell>
 								</treerow>
 							</treeitem>
 						</template>
@@ -46,6 +76,12 @@
 					<paging id="pagMenuAsignado" onPaging="@command('paginarLista', tipo=2)" autohide="true" />
 				</vlayout>
 			</east>
+			
+			<south hflex="1" border="none">
+				<div align="right">
+					<button label="Guardar" sclass="btn btn-sm btn-info" onClick="@command('guardar', wMensaje=true)"/>
+				</div>
+			</south>
 			
 		</borderlayout>
 	</window>

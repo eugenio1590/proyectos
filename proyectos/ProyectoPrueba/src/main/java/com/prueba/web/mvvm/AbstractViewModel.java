@@ -39,6 +39,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Messagebox.Button;
 import org.zkoss.zul.Window;
 
@@ -305,16 +306,17 @@ public abstract class AbstractViewModel {
 	 * Retorno: Ninguno
 	 * */
 	@SuppressWarnings("unchecked")
-	protected void constructMenu(List<ModelNavbar> modelo, Component parent){
+	protected void constructMenu(List<TreeNode<ModelNavbar>> modelo, Component parent){
 		if(modelo!=null)
-			for(ModelNavbar item : modelo){
+			for(TreeNode<ModelNavbar> nodo : modelo){
 				Component child;
-				if(item.getChilds().size()>0){
+				ModelNavbar item = nodo.getData();
+				if(nodo.getChildren().size()>0){
 					child = new Nav();
 					((Nav) child).setLabel(item.getLabel());
 					((Nav) child).setIconSclass(item.getIcon());
 					((Nav) child).setSclass("sidebar-fn");
-					constructMenu(item.getChilds(), child);
+					constructMenu(nodo.getChildren(), child);
 				}
 				else{
 					String icon = (item.getIcon()!=null) ? item.getIcon() : "z-icon-angle-double-right";

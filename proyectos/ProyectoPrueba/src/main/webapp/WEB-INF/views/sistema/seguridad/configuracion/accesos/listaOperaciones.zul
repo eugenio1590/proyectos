@@ -1,0 +1,25 @@
+<zk>
+	<window id="winOperaciones" title="Operaciones Permitidas" border="none" width="400px" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.prueba.web.mvvm.controladores.seguridad.configuracion.ListaOperacionViewModel')">
+		
+		<listbox id="gridOperaciones" width="100%" mold="paging" checkmark="true" multiple="true" 
+			selectedItems="@bind(vm.operacionesSeleccionadas)" model="@load(vm.operaciones)"
+			emptyMessage="No hay Operaciones registradas">
+			<listhead menupopup="auto">
+				<listheader label="Codigo" sort="auto(idOperacion)" />
+				<listheader label="Nombre" sort="auto(nombre)"/>
+			</listhead>
+			<template name="model">
+				<listitem>
+					<listcell label="@bind(each.idOperacion)" />
+					<listcell label="@bind(each.nombre)" />
+				</listitem>
+			</template>
+		</listbox>
+		<toolbar>
+			<button label="Guardar" sclass="btn btn-sm btn-info" visible="@bind(vm.editar)"
+				onClick="@command('guardar')" />
+		</toolbar>
+	</window>
+</zk>

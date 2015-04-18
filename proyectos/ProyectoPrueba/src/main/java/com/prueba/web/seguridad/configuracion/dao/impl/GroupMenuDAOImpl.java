@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Selection;
 
 import org.springframework.stereotype.Repository;
 
@@ -49,5 +51,41 @@ public class GroupMenuDAOImpl extends ArbolDAOImpl<GroupMenu> implements GroupMe
 		Map<String, Boolean> orders = new HashMap<String, Boolean>();
 		orders.put("id", true);
 		return this.ejecutarCriteria(concatenaArrayPredicate(restricciones), orders, start, limit);
+	}
+
+	@Override
+	public List<GroupMenu> consultarNodosDistintosHijosMenuUsuario(int idUsuario, int start, int limit) {
+		// TODO Auto-generated method stub
+		//1. Creamos el Criterio de busqueda
+		this.crearCriteria();
+
+		//2. Generamos los Joins
+		Map<String, JoinType> entidades=new HashMap<String, JoinType>();
+		entidades.put("group", JoinType.INNER);
+		Map<String, Join>joins=crearJoins(entidades);
+
+		//3. Creamos los campos a seleccionar
+		this.distinct=true;
+		this.selected=new Selection[]{
+				this.entity.get("menu")
+		};
+
+		//4. Creamos las Restricciones de la busqueda
+		List<Predicate> restricciones = new ArrayList<Predicate>();
+		restricciones.add(
+				this.criteriaBuilder.isEmpty(this.entity.<List>get("hijos"))
+				);
+		restricciones.add(
+				this.criteriaBuilder.equal(joins.get("group").join("groupMembers").join("usuario").get("id"), idUsuario)
+				);
+
+		//5. Creamos los campos de ordenamiento y ejecutamos
+		Map<String, Boolean> orders = new HashMap<String, Boolean>();
+		orders.put("menu", true);
+		
+		List<Expression<?>> groupBy = new ArrayList<Expression<?>>();
+		groupBy.add(this.entity.get("id"));
+		groupBy.add(this.entity.get("menu"));
+		return this.ejecutarCriteriaGroupBy(concatenaArrayPredicate(restricciones), null, groupBy , orders, start, limit);
 	}	
 }

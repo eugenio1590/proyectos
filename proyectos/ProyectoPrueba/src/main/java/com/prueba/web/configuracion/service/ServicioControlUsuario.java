@@ -1,12 +1,10 @@
 package com.prueba.web.configuracion.service;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 
-import com.prueba.web.model.Menu;
 import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 
@@ -38,5 +36,6 @@ public interface ServicioControlUsuario {
 	public Map<String, Object> consultarRootPadres(int pagina, int limit);
 	public Map<String, Object> consultarSubRamas(int idPadre, int pagina, int limit);
 	public Map<String, Object> consultarHijosNoAsignadoGrupo(int idGrupo, int idPadre, int pagina, int limit);
-	public List<Menu> consultarMenus();
+	//Operaciones - Menu
+	public Map<String, Object> consultarOperaciones(int pagina, int limit);
 }
