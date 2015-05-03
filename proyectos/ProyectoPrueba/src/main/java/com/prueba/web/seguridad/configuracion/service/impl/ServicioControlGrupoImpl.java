@@ -18,13 +18,10 @@ import com.prueba.web.seguridad.configuracion.dao.GrupoRepository;
 import com.prueba.web.seguridad.configuracion.dao.impl.GroupMemberDAO;
 import com.prueba.web.seguridad.configuracion.dao.impl.GroupMenuDAO;
 import com.prueba.web.seguridad.configuracion.dao.impl.GrupoDAO;
-import com.prueba.web.configuracion.dao.impl.MenuDAO;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.GroupMenu;
-import com.prueba.web.model.Menu;
 import com.prueba.web.model.Persona;
-import com.prueba.web.mvvm.BeanInjector;
 import com.prueba.web.service.impl.AbstractServiceImpl;
 import com.prueba.web.seguridad.configuracion.service.ServicioControlGrupo;
 
@@ -100,7 +97,7 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 		Page<GroupMember> pageGroupMember = groupMemberRepository.findAll(
 				groupMemberDAO.consultarUsuariosAsignadosGrupo(personaF, idGrupo, fieldSort, sortDirection), 
 				new PageRequest(pagina, limit));
-		parametros.put("total", pageGroupMember.getTotalElements());
+		parametros.put("total", Long.valueOf(pageGroupMember.getTotalElements()).intValue());
 		parametros.put("miembros", pageGroupMember.getContent());
 		return parametros;
 	}

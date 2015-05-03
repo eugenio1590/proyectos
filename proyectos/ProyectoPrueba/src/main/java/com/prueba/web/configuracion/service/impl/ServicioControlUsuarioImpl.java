@@ -206,9 +206,13 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarUsuariosNoAsignadosGrupo(Persona usuarioF, int idGrupo,
 			String fieldSort, Boolean sortDirection, int pagina, int limit){
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		//parametros.put("total", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
-		//parametros.put("usuarios", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		Page<Usuario> pageUsuario = usuarioRepository.findAll(
+				usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageUsuario.getTotalElements()).intValue());
+		parametros.put("usuarios", pageUsuario.getContent());
 		return parametros;
 	}
 	

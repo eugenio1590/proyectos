@@ -12,10 +12,13 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.springframework.data.jpa.domain.Specification;
 
 import com.prueba.web.dao.impl.AbstractJpaDao;
+import com.prueba.web.model.Group;
+import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 
@@ -89,18 +92,13 @@ public class UsuarioDAO extends AbstractJpaDao {
 	}
 	
 	public Specification<Usuario> consultarUsuariosNoAsignadosGrupo(final Persona usuarioF, 
-			final List<Usuario> usuariosGrupo, final String fieldSort, final Boolean sortDirection) {
+			final int idGrupo, final String fieldSort, final Boolean sortDirection) {
 		// TODO Auto-generated method stub
 		return new Specification<Usuario>() {
 
 			@Override
 			public Predicate toPredicate(Root<Usuario> entity, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				// TODO Auto-generated method stub
-				List<Integer> ids = new ArrayList<Integer>();
-				ids.add(-1);
-				for(Usuario usuario : usuariosGrupo)
-					ids.add(usuario.getId());
-				
+				// TODO Auto-generated method stub				
 				//1. Inicializar Variables
 				inicializar(entity, criteriaQuery, criteriaBuilder);
 				
@@ -111,7 +109,24 @@ public class UsuarioDAO extends AbstractJpaDao {
 				
 				List<Predicate> restricciones = new ArrayList<Predicate>();
 				agregarFiltros(usuarioF, restricciones, joins);
-				restricciones.add(criteriaBuilder.not(entity.get("id").in(ids)));
+				
+					//2.1 Creacion de un subquery
+				Subquery<GroupMember> subquery = criteriaQuery.subquery(GroupMember.class);
+				Root<GroupMember> fromGroupMember = subquery.from(GroupMember.class);
+				subquery.select(fromGroupMember);
+				subquery.where(
+						criteriaBuilder.and(
+								criteriaBuilder.equal(fromGroupMember.join("group").get("id"), idGrupo),
+								criteriaBuilder.equal(fromGroupMember.get("usuario"), entity.get("username"))
+						)
+				);
+					//2.2 Restricciones Principales
+				restricciones.add(
+						criteriaBuilder.or(
+								criteriaBuilder.isEmpty(entity.<List>get("groupMembers")),
+								criteriaBuilder.not(criteriaBuilder.exists(subquery))
+						)
+				);
 				
 				//3. Creamos los campos de ordenamiento y ejecutamos
 				List<Order> orders = new ArrayList<Order>();
