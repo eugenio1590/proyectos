@@ -90,7 +90,7 @@ public class GroupMenu extends Arbol implements Serializable {
 	@Override
 	public String getIcon() {
 		// TODO Auto-generated method stub
-		return this.getMenu().getNombre();
+		return this.getMenu().getIcon();
 	}
 
 	@Override

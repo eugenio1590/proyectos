@@ -13,7 +13,7 @@ import com.prueba.web.mvvm.ModelNavbar;
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Arbol implements ModelNavbar {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="arbol_id_seq")
 	@SequenceGenerator(name="arbol_id_seq", sequenceName="arbol_id_seq", initialValue=1, allocationSize=1)
@@ -54,7 +54,7 @@ public abstract class Arbol implements ModelNavbar {
 		this.hijos = hijos;
 	}
 
-	/**INTERFAZ*/
+	/**INTERFAZ*/	
 	//1. ModelNavbar
 	@Override
 	public void setParent(ModelNavbar parent) {

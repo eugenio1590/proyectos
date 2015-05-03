@@ -19,5 +19,5 @@ public interface ServicioControlGrupo {
 	//Menu de Grupos
 	public Map<String, Object> consultarPadresMenuAsignadoGrupo(int idGrupo, int pagina, int limit);
 	public boolean actualizarGroupMenu(List<GroupMenu> menuNuevo, int idGrupo, int pagina, int limit);
-	public Map<String, Object> consultarNodosDistintosHijosMenuUsuario(int idUsuario, int pagina, int limit);
+	public Map<String, Object> consultarNodosDistintosHijosMenuUsuario(int idUsuario);
 }

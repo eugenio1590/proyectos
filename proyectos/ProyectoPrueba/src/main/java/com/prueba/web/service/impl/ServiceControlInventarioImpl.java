@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import com.prueba.web.dao.ArticuloDAO;
-import com.prueba.web.mvvm.BeanInjector;
+import com.prueba.web.inventario.dao.ArticuloRepository;
+import com.prueba.web.inventario.dao.impl.ArticuloDAO;
+import com.prueba.web.model.Articulo;
 import com.prueba.web.service.ServiceControlInventario;
 
 @Service
@@ -16,15 +19,15 @@ import com.prueba.web.service.ServiceControlInventario;
 public class ServiceControlInventarioImpl extends AbstractServiceImpl implements ServiceControlInventario {
 	
 	@Autowired
-	@BeanInjector("articuloDAO")
-	private ArticuloDAO articuloDAO;
+	private ArticuloRepository articuloRepository;
 	
 	@Override
 	public Map<String, Object> listarArticulos(int pagina, int limit) {
 		// TODO Auto-generated method stub
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", articuloDAO.countAll());
-		parametros.put("articulos", articuloDAO.findAll(pagina*limit, limit));
+		Page<Articulo> pageArticulo = articuloRepository.findAll(new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageArticulo.getTotalElements()).intValue());
+		parametros.put("articulos", pageArticulo.getContent());
 		return parametros;
 	}
 	
@@ -32,20 +35,13 @@ public class ServiceControlInventarioImpl extends AbstractServiceImpl implements
 	public Map<String, Object> consultarArticulosCodigoONombre(String codigo,
 			String nombre, int pagina, int limit) {
 		// TODO Auto-generated method stub
-		codigo = (codigo!=null) ? "%"+codigo+"%" : null;
-		nombre = (nombre!=null) ? "%"+nombre+"%" : null;
+		ArticuloDAO articuloDAO = new ArticuloDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", ((Integer) articuloDAO.consultarArticulosCodigoONombre(codigo, nombre, 0, -1).size()).longValue());
-		parametros.put("articulos", articuloDAO.consultarArticulosCodigoONombre(codigo, nombre, pagina*limit, limit));
+		Page<Articulo> pageArticulo = articuloRepository.findAll(
+				articuloDAO.findByExample(new Articulo(codigo, nombre)), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageArticulo.getTotalElements()).intValue());
+		parametros.put("articulos", pageArticulo.getContent());
 		return parametros;
-	}	
-
-	/**SETTERS Y GETTERS*/
-	public ArticuloDAO getArticuloDAO() {
-		return articuloDAO;
-	}
-
-	public void setArticuloDAO(ArticuloDAO articuloDAO) {
-		this.articuloDAO = articuloDAO;
 	}
 }

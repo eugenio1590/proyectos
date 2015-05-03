@@ -141,7 +141,7 @@ public class SidebarViewModel extends AbstractViewModel implements SerializableE
 	 * Retorno: Ninguno
 	 * */
 	protected void construirMenuUsuario(int idUsuario){
-		Map<String, Object> parametros = servicioControlGrupo.consultarNodosDistintosHijosMenuUsuario(idUsuario, 0, -1);
+		Map<String, Object> parametros = servicioControlGrupo.consultarNodosDistintosHijosMenuUsuario(idUsuario);
 		ModelTree<ModelNavbar> menu = new ModelTree<ModelNavbar>();
 		List<ModelNavbar> menuGrupo = (List<ModelNavbar>) parametros.get("menu");
 		for(ModelNavbar menuG : menuGrupo)

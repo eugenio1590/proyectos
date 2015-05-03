@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
@@ -161,6 +162,13 @@ public class Usuario implements Serializable {
 
 	public void setPersona(Persona persona) {
 		this.persona = persona;
+	}
+	
+	/**EVENTOS*/
+	@PostLoad
+	public void postLoad(){
+		Hibernate.initialize(groupMembers);
+		Hibernate.initialize(persona);
 	}
 
 	/**METODOS PROPIOS DE LA CLASE*/

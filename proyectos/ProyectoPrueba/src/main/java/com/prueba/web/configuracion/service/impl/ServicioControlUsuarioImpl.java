@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,14 +19,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.prueba.web.configuracion.dao.MenuDAO;
-import com.prueba.web.configuracion.dao.OperacionDAO;
-import com.prueba.web.configuracion.dao.UsuarioDAO;
-import com.prueba.web.personas.dao.ClienteDAO;
-import com.prueba.web.personas.dao.EmpleadoDAO;
+import com.prueba.web.configuracion.dao.MenuRepository;
+import com.prueba.web.configuracion.dao.OperacionRepository;
+import com.prueba.web.configuracion.dao.impl.MenuDAO;
+import com.prueba.web.configuracion.dao.impl.UsuarioDAO;
+import com.prueba.web.configuracion.dao.UsuarioRepository;
+import com.prueba.web.personas.dao.ClienteRepository;
+import com.prueba.web.personas.dao.EmpleadoRepository;
+import com.prueba.web.personas.dao.impl.ClienteDAO;
+import com.prueba.web.personas.dao.impl.EmpleadoDAO;
+import com.prueba.web.model.Cliente;
+import com.prueba.web.model.Empleado;
 import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Menu;
+import com.prueba.web.model.Operacion;
 import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 import com.prueba.web.mvvm.BeanInjector;
@@ -43,24 +52,19 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	@BeanInjector("usuarioDAO")
-	private UsuarioDAO usuarioDAO;
+	private UsuarioRepository usuarioRepository;
 	
 	@Autowired
-	@BeanInjector("empleadoDAO")
-	private EmpleadoDAO empleadoDAO;
+	private EmpleadoRepository empleadoRepository;
 	
 	@Autowired
-	@BeanInjector("clienteDAO")
-	private ClienteDAO clienteDAO;
+	private ClienteRepository clienteRepository;
 	
 	@Autowired
-	@BeanInjector("menuDAO")
-	private MenuDAO menuDAO;
+	private MenuRepository menuRepository;
 	
 	@Autowired
-	@BeanInjector("operacionDAO")
-	private OperacionDAO operacionDAO;
+	private OperacionRepository operacionRepository;
 
 	public ServicioControlUsuarioImpl() {
 		// TODO Auto-generated constructor stub
@@ -98,27 +102,33 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	//1. Usuarios
 	@Override
 	public Usuario consultarUsuario(Integer id){
-		return usuarioDAO.findByPrimaryKey(id);
+		return usuarioRepository.findById(id);
 	}
 	
 	@Override
 	public Usuario consultarUsuario(String usuario, String clave) {
 		// TODO Auto-generated method stub
-		return usuarioDAO.consultarUsuario(usuario, clave);
+		usuario = (usuario==null) ? "" : usuario;
+		clave = (clave==null) ? "" : clave;
+		List<Usuario> listeUsuario = 
+				usuarioRepository.findByUsernameContainingIgnoreCaseOrPaswordContainingIgnoreCase(usuario, clave);
+		if(listeUsuario.size()>0)
+			return listeUsuario.get(0);
+		return null;
 	}
 
 	@Override
 	public Usuario grabarUsuario(Usuario usuario) {
 		// TODO Auto-generated method stub
 		//usuario.setPasword(this.bcryptEncoder.encode(usuario.getPasword()));
-		return usuarioDAO.save(usuario);
+		return usuarioRepository.save(usuario);
 	}
 	
 	@Override
 	public Usuario actualizarUsuario(Usuario usuario, boolean encriptar){
 		/*if(encriptar)
 			usuario.setPasword(this.bcryptEncoder.encode(usuario.getPasword()));*/
-		return usuarioDAO.update(usuario);
+		return grabarUsuario(usuario);
 	}
 	
 	@Override
@@ -135,7 +145,7 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Boolean eliminarUsuario(Usuario usuario){
 		if((usuario=consultarUsuario(usuario.getId()))!=null) {
-			usuarioDAO.delete(usuario);
+			usuarioRepository.delete(usuario);
 			return true;
 		}
 		
@@ -165,9 +175,12 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarUsuarios(Usuario usuarioF, String fieldSort, Boolean sortDirection, 
 			int pagina, int limit) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, 0, -1).size());
-		parametros.put("usuarios", usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection, pagina*limit, limit));
+		Page<Usuario> pageUsuario = usuarioRepository.findAll(
+				usuarioDAO.consultarUsuarios(usuarioF, fieldSort, sortDirection), new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageUsuario.getTotalElements()).intValue());
+		parametros.put("usuarios", pageUsuario.getContent());
 		return parametros;
 	}
 	
@@ -180,9 +193,13 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarUsuariosAsignadosGrupo(Persona usuarioF, int idGrupo,
 			String fieldSort, Boolean sortDirection, int pagina, int limit){
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", usuarioDAO.consultarUsuariosAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
-		parametros.put("usuarios", usuarioDAO.consultarUsuariosAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		Page<Usuario> pageUsuario = usuarioRepository.findAll(
+				usuarioDAO.consultarUsuariosAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageUsuario.getTotalElements()).intValue());
+		parametros.put("usuarios", pageUsuario.getContent());
 		return parametros;
 	}
 	
@@ -190,18 +207,23 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	public Map<String, Object> consultarUsuariosNoAsignadosGrupo(Persona usuarioF, int idGrupo,
 			String fieldSort, Boolean sortDirection, int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
-		parametros.put("usuarios", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
+		//parametros.put("total", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, 0, -1).size());
+		//parametros.put("usuarios", usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection, pagina*limit, limit));
 		return parametros;
 	}
 	
 	//Usuarios Especificos:
 	//1.1 Empleados
 	@Override
-	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, String fieldSort, Boolean sortDirection, int pagina, int limit){
+	public Map<String, Object> consultarEmpleadosSinUsuarios(Persona empleadoF, String fieldSort, Boolean sortDirection, 
+			int pagina, int limit){
+		EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, fieldSort, sortDirection, 0, -1).size());
-		parametros.put("empleados", empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, fieldSort, sortDirection, pagina*limit, limit));
+		Page<Empleado> pageEmpleado = empleadoRepository.findAll(
+				empleadoDAO.consultarEmpleadosSinUsuario(empleadoF, fieldSort, sortDirection), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageEmpleado.getTotalElements()).intValue());
+		parametros.put("empleados", pageEmpleado.getContent());
 		return parametros;
 	}
 	
@@ -209,9 +231,13 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarClientesSinUsuarios(Persona clienteF, String fieldSort, Boolean sortDirection,
 			int pagina, int limit){
+		ClienteDAO clienteDAO = new ClienteDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", clienteDAO.consultarClientesSinUsuario(clienteF, fieldSort, sortDirection, 0, -1).size());
-		parametros.put("clientes", clienteDAO.consultarClientesSinUsuario(clienteF, fieldSort, sortDirection, pagina*limit, limit));
+		Page<Cliente> pageCliente = clienteRepository.findAll(
+				clienteDAO.consultarClientesSinUsuario(clienteF, fieldSort, sortDirection), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageCliente.getTotalElements()).intValue());
+		parametros.put("clientes", pageCliente.getContent());
 		return parametros;
 	}
 	
@@ -219,24 +245,31 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarRootPadres(int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", menuDAO.consultarRootPadres(0, -1).size());
-		parametros.put("menu", menuDAO.consultarRootPadres(pagina*limit, limit));
+		Page<Menu> pageMenu = menuRepository.findByPadreIsNull(new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageMenu.getTotalElements()).intValue());
+		parametros.put("menu", pageMenu.getContent());
 		return parametros;
 	}
 	
 	@Override
 	public Map<String, Object> consultarSubRamas(int idPadre, int pagina, int limit){
+		MenuDAO menuDAO = new MenuDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", menuDAO.consultarSubRamas(idPadre, 0, -1).size());
-		parametros.put("menu", menuDAO.consultarSubRamas(idPadre, pagina*limit, limit));
+		Page<Menu> pageMenu = menuRepository.findAll(menuDAO.consultarSubRamas(idPadre), new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageMenu.getTotalElements()).intValue());
+		parametros.put("menu", pageMenu.getContent());
 		return parametros;
 	}
 	
 	@Override
 	public Map<String, Object> consultarHijosNoAsignadoGrupo(int idGrupo, int idPadre, int pagina, int limit){
+		MenuDAO menuDAO = new MenuDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre, 0, -1).size());
-		parametros.put("menu", menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre, pagina*limit, limit));
+		Page<Menu> pageMenu = menuRepository.findAll(
+				menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre), 
+				new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageMenu.getTotalElements()).intValue());
+		parametros.put("menu", pageMenu.getContent());
 		return parametros;
 	}
 	
@@ -244,8 +277,9 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	@Override
 	public Map<String, Object> consultarOperaciones(int pagina, int limit){
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		parametros.put("total", operacionDAO.countAll());
-		parametros.put("operaciones", operacionDAO.findAll(pagina*limit, limit));
+		Page<Operacion> pageOperacion = operacionRepository.findAll(new PageRequest(pagina, limit));
+		parametros.put("total", Long.valueOf(pageOperacion.getTotalElements()).intValue());
+		parametros.put("operaciones", pageOperacion.getContent());
 		return parametros;
 	}
 	
@@ -267,45 +301,5 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
-	}
-
-	public UsuarioDAO getUsuarioDAO() {
-		return usuarioDAO;
-	}
-
-	public void setUsuarioDAO(UsuarioDAO usuarioDAO) {
-		this.usuarioDAO = usuarioDAO;
-	}
-
-	public EmpleadoDAO getEmpleadoDAO() {
-		return empleadoDAO;
-	}
-
-	public void setEmpleadoDAO(EmpleadoDAO empleadoDAO) {
-		this.empleadoDAO = empleadoDAO;
-	}
-
-	public ClienteDAO getClienteDAO() {
-		return clienteDAO;
-	}
-
-	public void setClienteDAO(ClienteDAO clienteDAO) {
-		this.clienteDAO = clienteDAO;
-	}
-
-	public MenuDAO getMenuDAO() {
-		return menuDAO;
-	}
-
-	public void setMenuDAO(MenuDAO menuDAO) {
-		this.menuDAO = menuDAO;
-	}
-
-	public OperacionDAO getOperacionDAO() {
-		return operacionDAO;
-	}
-
-	public void setOperacionDAO(OperacionDAO operacionDAO) {
-		this.operacionDAO = operacionDAO;
 	}
 }

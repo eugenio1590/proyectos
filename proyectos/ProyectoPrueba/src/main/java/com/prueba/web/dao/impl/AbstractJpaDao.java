@@ -8,9 +8,11 @@ import java.util.Map;
 
 
 
+
 //import javax.persistence.EntityManager;
 import org.hibernate.ejb.HibernateEntityManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
@@ -25,6 +27,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
+
 
 
 
@@ -58,6 +61,11 @@ public class AbstractJpaDao<T, ID extends Serializable> implements IGenericDao<T
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public AbstractJpaDao(Class clazz) {
 		this.persistenceClass = clazz;
+	}
+	
+	public AbstractJpaDao(Class clazz, EntityManager classEntityManager) {
+		this.persistenceClass = clazz;
+		this.classEntityManager = (HibernateEntityManager) classEntityManager;
 	}
 	
 	private HibernateEntityManager getClassEntityManager() {

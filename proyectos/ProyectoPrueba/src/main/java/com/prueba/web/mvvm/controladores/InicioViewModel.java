@@ -12,6 +12,7 @@ import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -106,16 +107,21 @@ public class InicioViewModel extends AbstractViewModel {
 		}
 	}
 	
+	@Command
+	public void mostrarReporte(){
+		Clients.evalJavaScript("loadReport(\"rest/gestionReportes/articulos?pagina=1\", \"content\");");
+	}
+	
 	/**METODOS PROPIOS DE LA CLASE*/
 	@NotifyChange("articulos")
 	private void cambiarArticulos(int page){
 		Map<String, Object> parametros = serviceControlInventario.consultarArticulosCodigoONombre(codigoFiltro, nombreFiltro, page, PAGE_SIZE);
-		Long total = (Long) parametros.get("total");
+		Integer total = (Integer) parametros.get("total");
 		articulos = (List<Articulo>) parametros.get("articulos");
 		gridArticulos.setMultiple(true);
 		gridArticulos.setCheckmark(true);
 		pagArticulos.setActivePage(page);
-		pagArticulos.setTotalSize(total.intValue());
+		pagArticulos.setTotalSize(total);
 	}
 
 	/**SETTERS Y GETTERS*/

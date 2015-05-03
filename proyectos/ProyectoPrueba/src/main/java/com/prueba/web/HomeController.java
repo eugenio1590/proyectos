@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.prueba.web.configuracion.dao.UsuarioRepository;
 import com.prueba.web.configuracion.service.ServicioControlUsuario;
 
 /**
@@ -26,6 +27,9 @@ public class HomeController {
 	
 	@Autowired
 	private ServicioControlUsuario servicioControlUsuario;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.

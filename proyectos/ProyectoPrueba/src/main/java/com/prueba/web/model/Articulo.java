@@ -39,6 +39,11 @@ public class Articulo implements Serializable {
 
 	public Articulo() {
 	}
+	
+	public Articulo(String codigo, String nombre){
+		this.codigo = codigo;
+		this.nombre = nombre;
+	}
 
 	public Integer getId() {
 		return this.id;
