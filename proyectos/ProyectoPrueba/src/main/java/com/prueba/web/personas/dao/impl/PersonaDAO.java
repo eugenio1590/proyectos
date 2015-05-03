@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.prueba.web.dao.AbstractJpaDao;
+import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.model.Persona;
 
 public abstract class PersonaDAO<T extends Persona> extends AbstractJpaDao<T> {

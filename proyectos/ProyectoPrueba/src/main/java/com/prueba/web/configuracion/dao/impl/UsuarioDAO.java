@@ -15,7 +15,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.prueba.web.dao.AbstractJpaDao;
+import com.prueba.web.dao.impl.AbstractJpaDao;
 import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 
