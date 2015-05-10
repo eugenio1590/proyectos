@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prueba.web.configuracion.dao.MenuRepository;
 import com.prueba.web.configuracion.dao.OperacionRepository;
@@ -111,20 +113,22 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 		usuario = (usuario==null) ? "" : usuario;
 		clave = (clave==null) ? "" : clave;
 		List<Usuario> listeUsuario = 
-				usuarioRepository.findByUsernameContainingIgnoreCaseOrPaswordContainingIgnoreCase(usuario, clave);
+				usuarioRepository.findByUsernameEqualsIgnoreCaseOrPaswordEqualsIgnoreCase(usuario, clave);
 		if(listeUsuario.size()>0)
 			return listeUsuario.get(0);
 		return null;
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Usuario grabarUsuario(Usuario usuario) {
 		// TODO Auto-generated method stub
 		//usuario.setPasword(this.bcryptEncoder.encode(usuario.getPasword()));
-		return usuarioRepository.save(usuario);
+		return usuarioRepository.saveAndFlush(usuario);
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Usuario actualizarUsuario(Usuario usuario, boolean encriptar){
 		/*if(encriptar)
 			usuario.setPasword(this.bcryptEncoder.encode(usuario.getPasword()));*/
@@ -132,6 +136,7 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Boolean cambiarEstadoUsuario(Usuario usuario, boolean estado){
 		if((usuario=consultarUsuario(usuario.getId()))!=null) {
 			usuario.setActivo(estado);
@@ -143,6 +148,7 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Boolean eliminarUsuario(Usuario usuario){
 		if((usuario=consultarUsuario(usuario.getId()))!=null) {
 			usuarioRepository.delete(usuario);
@@ -212,7 +218,7 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 				usuarioDAO.consultarUsuariosNoAsignadosGrupo(usuarioF, idGrupo, fieldSort, sortDirection), 
 				new PageRequest(pagina, limit));
 		parametros.put("total", Long.valueOf(pageUsuario.getTotalElements()).intValue());
-		parametros.put("usuarios", pageUsuario.getContent());
+		parametros.put("usuarios", modificableLista(pageUsuario.getContent()));
 		return parametros;
 	}
 	
@@ -257,23 +263,44 @@ public class ServicioControlUsuarioImpl extends AbstractServiceImpl implements S
 	
 	@Override
 	public Map<String, Object> consultarSubRamas(int idPadre, int pagina, int limit){
+		Integer total = 0;
+		List<Menu> subRamas = new ArrayList<Menu>();
 		MenuDAO menuDAO = new MenuDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		Page<Menu> pageMenu = menuRepository.findAll(menuDAO.consultarSubRamas(idPadre), new PageRequest(pagina, limit));
-		parametros.put("total", Long.valueOf(pageMenu.getTotalElements()).intValue());
-		parametros.put("menu", pageMenu.getContent());
+		if(limit > 0){
+			Page<Menu> pageMenu = menuRepository.findAll(menuDAO.consultarSubRamas(idPadre), new PageRequest(pagina, limit));
+			total = Long.valueOf(pageMenu.getTotalElements()).intValue();
+			subRamas = pageMenu.getContent();
+		}
+		else {
+			subRamas = menuRepository.findAll(menuDAO.consultarSubRamas(idPadre));
+			total = subRamas.size();
+		}
+		parametros.put("total", total);
+		parametros.put("menu", subRamas);
 		return parametros;
 	}
 	
 	@Override
 	public Map<String, Object> consultarHijosNoAsignadoGrupo(int idGrupo, int idPadre, int pagina, int limit){
+		Integer total = 0;
+		List<Menu> hijos = new ArrayList<Menu>();
 		MenuDAO menuDAO = new MenuDAO();
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		Page<Menu> pageMenu = menuRepository.findAll(
-				menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre), 
-				new PageRequest(pagina, limit));
-		parametros.put("total", Long.valueOf(pageMenu.getTotalElements()).intValue());
-		parametros.put("menu", pageMenu.getContent());
+		if(limit>0){
+			Page<Menu> pageMenu = menuRepository.findAll(
+					menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre), 
+					new PageRequest(pagina, limit));
+			total =  Long.valueOf(pageMenu.getTotalElements()).intValue();
+			hijos =  pageMenu.getContent();
+		}
+		else {
+			hijos = menuRepository.findAll(
+					menuDAO.consultarHijosNoAsignadoGrupo(idGrupo, idPadre));
+			total = hijos.size();
+		}
+		parametros.put("total", total);
+		parametros.put("menu", hijos);
 		return parametros;
 	}
 	

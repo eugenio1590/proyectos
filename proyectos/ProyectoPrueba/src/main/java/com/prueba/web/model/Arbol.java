@@ -8,6 +8,10 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
 import com.prueba.web.mvvm.ModelNavbar;
 
 @Entity
@@ -15,6 +19,7 @@ import com.prueba.web.mvvm.ModelNavbar;
 public abstract class Arbol implements ModelNavbar {
 
 	@Id
+	@Generated(GenerationTime.INSERT)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="arbol_id_seq")
 	@SequenceGenerator(name="arbol_id_seq", sequenceName="arbol_id_seq", initialValue=1, allocationSize=1)
 	@Column(unique=true, nullable=false)
@@ -93,6 +98,18 @@ public abstract class Arbol implements ModelNavbar {
 	public <T> T[] childToArray(Class<?> clazz, int element) {
 		// TODO Auto-generated method stub
 		return getChilds().toArray( (T[]) Array.newInstance(clazz, element));
+	}
+	
+	/**EVENTOS*/
+	@PostLoad
+	public void postLoad(){
+		try {
+			Hibernate.initialize(this.hijos);
+		}
+		catch (Exception e)
+		{
+			return;
+		}
 	}
 	
 	/**METODOS PROPIOS DE LA CLASE*/

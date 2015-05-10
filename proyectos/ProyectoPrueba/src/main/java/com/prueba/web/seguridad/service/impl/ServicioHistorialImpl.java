@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prueba.web.seguridad.dao.HistoryLoginRepository;
 import com.prueba.web.model.HistoryLogin;
@@ -19,6 +21,7 @@ public class ServicioHistorialImpl extends AbstractServiceImpl implements Servic
 	
 	//1. Historial de Session
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void registrarHistorialSession(Usuario usuario){
 		HistoryLogin history = historyLoginRepository.findByDateLogoutIsNullAndUsuarioId(usuario.getId());
 		if(history==null){
@@ -30,6 +33,7 @@ public class ServicioHistorialImpl extends AbstractServiceImpl implements Servic
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void cerarHistorialSession(Usuario usuario){
 		HistoryLogin history = historyLoginRepository.findByDateLogoutIsNullAndUsuarioId(usuario.getId());
 		if(history!=null){

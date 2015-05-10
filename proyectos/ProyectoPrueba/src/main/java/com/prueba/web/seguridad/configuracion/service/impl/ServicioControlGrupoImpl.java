@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prueba.web.seguridad.configuracion.dao.GroupMemberRepository;
 import com.prueba.web.seguridad.configuracion.dao.GroupMenuRepository;
@@ -67,10 +69,12 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	@Override
 	public Group consultarGrupoId(Integer id) {
 		// TODO Auto-generated method stub
-		return grupoRepository.getOne(id);
+		Group grupo = grupoRepository.getOne(id);
+		return grupo;
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Group registrarOActualizarGrupo(Group grupo) {
 		// TODO Auto-generated method stub
 		grupo.setAuthority("ROLE_"+grupo.getGroupName().replaceAll(" ", "_").toUpperCase());
@@ -78,6 +82,7 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 	}
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
 	public Boolean eliminarGrupo(Group grupo) {
 		// TODO Auto-generated method stub
 		if(consultarGrupoId(grupo.getId())!=null)
@@ -98,8 +103,24 @@ public class ServicioControlGrupoImpl extends AbstractServiceImpl implements Ser
 				groupMemberDAO.consultarUsuariosAsignadosGrupo(personaF, idGrupo, fieldSort, sortDirection), 
 				new PageRequest(pagina, limit));
 		parametros.put("total", Long.valueOf(pageGroupMember.getTotalElements()).intValue());
-		parametros.put("miembros", pageGroupMember.getContent());
+		parametros.put("miembros", modificableLista(pageGroupMember.getContent()));
 		return parametros;
+	}
+	
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+	public void actualizarMiembrosGrupo(Group grupo, List<GroupMember> miembrosAgregar, List<GroupMember> miembrosEliminar){
+		if(miembrosAgregar!=null)
+			for(GroupMember miembro : miembrosAgregar){
+				System.out.println("*******************************PASO INSERT********************");
+				miembro.setGroup(grupo);
+				groupMemberRepository.saveAndFlush(miembro);
+			}
+		
+		if(miembrosEliminar!=null){
+			System.out.println("*******************************PASO DELETE********************");
+			groupMemberRepository.deleteInBatch(miembrosEliminar);
+		}
 	}
 	
 	//Menu de Grupos

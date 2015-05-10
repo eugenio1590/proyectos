@@ -69,6 +69,9 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 	private Set<Usuario> usuariosSeleccionados;
 	private Persona usuarioFiltro;
 	
+	private List<GroupMember> miembrosAgregar;
+	private List<GroupMember> miembrosEliminar;
+	
 	//Atributos
 	private static final int PAGE_SIZE = 8;
 	private String titulo;
@@ -84,6 +87,8 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 		};
 		miembroFiltro = new Persona() {
 		};
+		miembrosAgregar = new ArrayList<GroupMember>();
+		miembrosEliminar = new ArrayList<GroupMember>();
 		
 		pagUsuariosNoGrupo.setPageSize(PAGE_SIZE);
 		agregarGridSort(gridUsuariosNoGrupo);
@@ -99,6 +104,7 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 		}
 		else{
 			titulo = "Actualizar Grupo";
+			//this.grupo = servicioControlGrupo.consultarGrupoId(grupo.getId());
 			this.grupo = grupo;
 			cambiarUsuariosGrupo(0, null, null);
 			cambiarUsuariosNoGrupo(0, null, null);
@@ -210,6 +216,8 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 					miembro.setUsuario(usuario);
 					miembro.setGroup(grupo);
 					usuariosGrupo.add(miembro);
+					miembrosAgregar.add(miembro);
+					miembrosEliminar.remove(miembro);
 				}
 				usuariosNoGrupo.removeAll(usuariosSeleccionados);
 				usuariosSeleccionados.clear();
@@ -224,6 +232,8 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 				for(GroupMember miembro : miembrosSeleccionados){
 					Usuario usuario = miembro.getUsuario();
 					usuariosNoGrupo.add(usuario);
+					miembrosEliminar.add(miembro);
+					miembrosAgregar.remove(miembro);
 				}
 				usuariosGrupo.removeAll(miembrosSeleccionados);
 				miembrosSeleccionados.clear();
@@ -233,8 +243,10 @@ public class FormularioGruposViewModel extends AbstractViewModel implements Even
 	@Command
 	public void guardar(){
 		if(operacion.equalsIgnoreCase("Insertar") || operacion.equalsIgnoreCase("Modificar")){
-			grupo.setGroupMembers(usuariosGrupo);
-			servicioControlGrupo.registrarOActualizarGrupo(grupo);
+			grupo=servicioControlGrupo.registrarOActualizarGrupo(grupo);
+			servicioControlGrupo.actualizarMiembrosGrupo(grupo, miembrosAgregar, miembrosEliminar);
+			miembrosAgregar.clear();
+			miembrosEliminar.clear();
 		}
 		ejecutarGlobalCommand("cambiarGrupos", null);
 		winGrupo.detach();

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.*;
+
+import org.hibernate.Hibernate;
 
 import com.prueba.web.mvvm.ModelNavbar;
 
@@ -74,6 +77,28 @@ public class GroupMenu extends Arbol implements Serializable {
 	public void setOperacions(List<Operacion> operacions) {
 		this.operacions = operacions;
 	}
+	
+	/**EVENTOS*/
+	@Override
+	@PostLoad
+	public void postLoad(){
+		super.postLoad();
+		try {
+			Hibernate.initialize(this.operacions);
+		}
+		catch (Exception e){
+			return;
+		}
+	}
+	/*@PostConstruct
+	public void postConstruct(){
+		try {
+			Hibernate.initialize(this.operacions);
+		}
+		catch (Exception e){
+			return;
+		}
+	}*/
 
 	/**METODOS OVERRIDE*/
 	@Override

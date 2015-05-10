@@ -1,8 +1,10 @@
 package com.prueba.web.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public abstract class AbstractServiceImpl {
 	
@@ -37,4 +39,10 @@ public abstract class AbstractServiceImpl {
 		return sumarORestarFecha(fecha, Calendar.YEAR, annos);
 	}
 
+	protected <T> List<T> modificableLista(List<T> noModificableLista){
+		List<T> modificableLista = new ArrayList<T>();
+		for(T model : noModificableLista)
+			modificableLista.add(model);
+		return modificableLista;
+	}
 }

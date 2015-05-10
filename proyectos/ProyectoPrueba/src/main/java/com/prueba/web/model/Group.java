@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +23,7 @@ public class Group implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Generated(GenerationTime.INSERT)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="groups_id_seq")
 	@SequenceGenerator(name="groups_id_seq", sequenceName="groups_id_seq", initialValue=1, allocationSize=1)
 	@Column(unique=true, nullable=false)
@@ -31,7 +36,7 @@ public class Group implements Serializable {
 	private String authority;
 
 	//bi-directional many-to-one association to GroupMember
-	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="group", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, orphanRemoval=true)
 	private List<GroupMember> groupMembers;
 	
 	//bi-directional many-to-one association to GroupMenu
@@ -72,7 +77,8 @@ public class Group implements Serializable {
 
 	public void setGroupMembers(List<GroupMember> groupMembers) {
 		this.groupMembers.clear();
-		this.groupMembers.addAll(groupMembers);
+		for(GroupMember miembro : groupMembers)
+			this.addGroupMember(miembro);
 	}
 
 	public GroupMember addGroupMember(GroupMember groupMember) {
@@ -87,6 +93,11 @@ public class Group implements Serializable {
 		groupMember.setGroup(null);
 
 		return groupMember;
+	}
+	
+	/**METODOS ESTATICOS DE LA CLASE*/
+	public static void initializeGroupMember(Group group){
+		Hibernate.initialize(group.getGroupMembers());
 	}
 
 }

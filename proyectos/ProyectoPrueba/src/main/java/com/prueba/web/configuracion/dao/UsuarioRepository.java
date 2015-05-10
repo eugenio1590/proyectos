@@ -12,4 +12,6 @@ public interface UsuarioRepository extends IGenericJPARepository<Usuario, Intege
 	Usuario findById(Integer id);
 	List<Usuario> findByUsernameContainingIgnoreCaseOrPaswordContainingIgnoreCase(
 			String username, String pasword);
+	List<Usuario> findByUsernameEqualsIgnoreCaseOrPaswordEqualsIgnoreCase(
+			String username, String pasword);
 }

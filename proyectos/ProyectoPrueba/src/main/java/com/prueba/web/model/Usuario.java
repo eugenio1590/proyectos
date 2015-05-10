@@ -7,10 +7,13 @@ import javax.persistence.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.AnyMetaDef;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.MetaValue;
 
 import com.prueba.web.mvvm.AbstractViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,7 +28,7 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	//@Generated(GenerationTime.INSERT)
+	@Generated(GenerationTime.INSERT)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="usuario_id_seq")
 	@SequenceGenerator(name="usuario_id_seq", sequenceName="usuario_id_seq", initialValue=1, allocationSize=1)
 	@Column(insertable=false, updatable=false)
@@ -70,6 +73,7 @@ public class Usuario implements Serializable {
 	private Persona persona;
 
 	public Usuario() {
+		groupMembers= new ArrayList<GroupMember>();
 	}
 
 	public Integer getId() {
@@ -167,8 +171,13 @@ public class Usuario implements Serializable {
 	/**EVENTOS*/
 	@PostLoad
 	public void postLoad(){
-		Hibernate.initialize(groupMembers);
-		Hibernate.initialize(persona);
+		try {
+			Hibernate.initialize(groupMembers);
+			Hibernate.initialize(persona);
+		}
+		catch(Exception e){
+			return;
+		}
 	}
 
 	/**METODOS PROPIOS DE LA CLASE*/

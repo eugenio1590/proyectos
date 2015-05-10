@@ -17,12 +17,11 @@ import javax.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.prueba.web.dao.impl.AbstractJpaDao;
-import com.prueba.web.model.Group;
 import com.prueba.web.model.GroupMember;
 import com.prueba.web.model.Persona;
 import com.prueba.web.model.Usuario;
 
-public class UsuarioDAO extends AbstractJpaDao {
+public class UsuarioDAO extends AbstractJpaDao<Usuario> {
 	
 	public Specification<Usuario> consultarUsuarios(final Usuario usuarioF, 
 			final String fieldSort, final Boolean sortDirection) {

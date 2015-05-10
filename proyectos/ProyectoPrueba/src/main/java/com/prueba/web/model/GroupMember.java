@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
 
 /**
  * The persistent class for the group_members database table.
@@ -16,6 +19,7 @@ public class GroupMember implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Generated(GenerationTime.INSERT)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="group_members_id_seq")
 	@SequenceGenerator(name="group_members_id_seq", sequenceName="group_members_id_seq", initialValue=1, allocationSize=1)
 	@Column(unique=true, nullable=false)
